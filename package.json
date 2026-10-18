@@ -1,6 +1,6 @@
 {
     "name": "zide",
-    "displayName": "Embedded IDE",
+    "displayName": "Zero IDE",
     "publisher": "cl",
     "author": {
         "name": "cl",
@@ -188,7 +188,7 @@
         ],
         "configuration": [
             {
-                "title": "Embedded IDE",
+                "title": "Zero IDE",
                 "properties": {
                     "ZIDE.MCP.Server.Enable": {
                         "type": "boolean",

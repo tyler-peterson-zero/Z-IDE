@@ -70,7 +70,7 @@ export async function activate(context: vscode.ExtensionContext) {
     RegisterGlobalEvent();
     RegisterMsgListener();
 
-    GlobalEvent.log_info('Embedded IDE launch begin');
+    GlobalEvent.log_info('Zero IDE launch begin');
 
     // init platform
     try {
@@ -314,7 +314,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
     // launch done
     GlobalEvent.emit('extension_launch_done');
-    GlobalEvent.log_info('Embedded IDE launch done');
+    GlobalEvent.log_info('Zero IDE launch done');
 }
 
 // this method is called when your extension is deactivated

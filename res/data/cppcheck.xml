@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- !!! Embedded IDE: Cppcheck config template !!! -->
+<!-- !!! Zero IDE: Cppcheck config template !!! -->
 <project version="1">
     <builddir>${cppcheck_build_folder}</builddir>
     <platform>${platform}</platform>

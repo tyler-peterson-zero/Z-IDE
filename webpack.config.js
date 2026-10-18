@@ -17,6 +17,10 @@ const config = {
         devtoolModuleFilenameTemplate: '../[resource-path]'
     },
     devtool: 'source-map',
+    // src/Private gitignored upstream; require() calls wrapped in try/catch
+    ignoreWarnings: [
+        { message: /Can't resolve '\.\/Private\// }
+    ],
     externals: {
         vscode: 'commonjs vscode',
         x2js: 'x2js',

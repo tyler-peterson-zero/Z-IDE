@@ -1,4 +1,4 @@
-# Embedded IDE
+# Zero IDE
 
 [![](https://img.shields.io/badge/home_page-em--ide.com-blue)](https://em-ide.com/)
 [![](https://img.shields.io/badge/chat-discuss.em--ide.com-orange)](https://discuss.em-ide.com/)

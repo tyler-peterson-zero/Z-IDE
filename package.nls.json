@@ -171,14 +171,14 @@
     "settings.option.disable.editor_context.menu": "Disable editor context menu",
     "settings.option.disable.explorer_context.menu": "Disable explorer context menu",
 
-    "string.zide.startup.walkthroughs": "Embedded IDE Startup",
-    "string.zide.startup.walkthroughs.detail": "We'll show you how to get started with Embedded IDE.",
+    "string.zide.startup.walkthroughs": "Zero IDE Startup",
+    "string.zide.startup.walkthroughs.detail": "We'll show you how to get started with Zero IDE.",
     "string.zide.setup.toolchain": "Setup Toolchain",
     "string.zide.setup.toolchain.detail": "Before you start, we need to setup the path of the toolchain(compiler).\n[Setup Toolchain](command:zide.operation.install_toolchain)",
     "string.zide.start_project": "Start Your Project",
     "string.zide.start_project.detail": "Now, We can create a project !\n[Create Project](command:zide.operation.new_project)\nor import a project !\n[Import Project](command:zide.operation.import_project)",
     "string.zide.open_docs": "Learn More",
-    "string.zide.open_docs.detail": "Click the link will open the home page that may help you learn more about usage.\n[Embedded IDE](https://em-ide.com/)",
+    "string.zide.open_docs.detail": "Click the link will open the home page that may help you learn more about usage.\n[Zero IDE](https://em-ide.com/)",
 
     "string.zide.project.welcome": "No zide projects in this workspace !\n[Open Project](command:zide.operation.open_project)\n[New Project](command:zide.operation.new_project)\n[Import Project](command:zide.operation.import_project)"
 }
