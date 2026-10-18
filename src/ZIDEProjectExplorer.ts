@@ -35,20 +35,20 @@ import * as jsonc_parser from 'jsonc-parser';
 import { File } from '../lib/node-utility/File';
 import { ResManager } from './ResManager';
 import { GlobalEvent } from './GlobalEvents';
-import { AbstractProject, CheckError, DataChangeType, VirtualSource, SourceFileOptions, EIDE_FILE_OPTION_VERSION } from './EIDEProject';
+import { AbstractProject, CheckError, DataChangeType, VirtualSource, SourceFileOptions, ZIDE_FILE_OPTION_VERSION } from './ZIDEProject';
 import { ToolchainName, ToolchainManager } from './ToolchainManager';
 import {
     BuilderOptions,
     CreateOptions, VirtualFolder, VirtualFile, ImportOptions,
     ProjectTargetInfo, ProjectConfigData, ProjectType, ProjectConfiguration, ProjectBaseApi, MAPPED_KEYS_IN_TARGET_INFO
-} from './EIDETypeDefine';
+} from './ZIDETypeDefine';
 import {
     PackInfo, ComponentFileItem, DeviceInfo,
     getComponentKeyDescription, ArmBaseCompileData, ArmBaseCompileConfigModel,
     RiscvCompileData, AnyGccCompileData,
     getRamRomName,
     getRamRomRange
-} from "./EIDEProjectModules";
+} from "./ZIDEProjectModules";
 import { WorkspaceManager } from './WorkspaceManager';
 import {
     can_not_close_project, project_is_opened, project_load_failed,
@@ -135,7 +135,7 @@ import {
     parseIarCompilerLog, 
     CompilerDiagnostics, parseGccCompilerLog, parseArmccCompilerLog, 
     parseKeilc51CompilerLog, parseSdccCompilerLog, parseCosmicStm8CompilerLog, 
-    EideDiagnosticCode
+    ZideDiagnosticCode
 } from './ProblemMatcher';
 import * as iarParser from './IarProjectParser';
 import * as ArmCpuUtils from './ArmCpuUtils';
@@ -143,7 +143,7 @@ import { ShellFlasherIndexItem } from './WebInterface/WebInterface';
 import { jsonc } from 'jsonc';
 import { SimpleUIConfig, SimpleUIConfigData_input, SimpleUIConfigData_options, SimpleUIConfigData_text, SimpleUIConfigData_table, SimpleUIConfigData_boolean, SimpleUIConfigData_divider, SimpleUIConfigData_tag } from "./SimpleUIDef";
 import { StatusBarManager } from './StatusBarManager';
-import { doMigration, detectProject } from './EIDEProjectMigration';
+import { doMigration, detectProject } from './ZIDEProjectMigration';
 import { onRegisterClangdProvider } from './clangdConfigProvider';
 import * as hooks from './Hooks';
 
@@ -706,7 +706,7 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
         this.dataChangedEvent = new vscode.EventEmitter<ProjTreeItem>();
         this.context.subscriptions.push(this.dataChangedEvent);
         this.onDidChangeTreeData = this.dataChangedEvent.event;
-        this.recFile = File.fromArray([ResManager.GetInstance().getEideHomeFolder().path, ProjectDataProvider.recName]);
+        this.recFile = File.fromArray([ResManager.GetInstance().getZideHomeFolder().path, ProjectDataProvider.recName]);
         this.loadRecord();
     }
 
@@ -725,7 +725,7 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
     // TreeDragAndDropController
     //---------------------------------------
 
-    static readonly PROJECT_TREE_ITEM_MIME_ID: string = `application/vnd.code.tree.cl.eide.view.projects`;
+    static readonly PROJECT_TREE_ITEM_MIME_ID: string = `application/vnd.code.tree.cl.zide.view.projects`;
 
     readonly dragMimeTypes: string[] = [
         ProjectDataProvider.PROJECT_TREE_ITEM_MIME_ID
@@ -738,7 +738,7 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
 
     handleDrag(source: readonly ProjTreeItem[], dataTransfer: vscode.DataTransfer, token: vscode.CancellationToken): Thenable<void> | void {
 
-        console.log('[cl.eide] handleDrag');
+        console.log('[cl.zide] handleDrag');
         console.log(source);
 
         const fList: File[] = [];
@@ -758,7 +758,7 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
 
     handleDrop(target: ProjTreeItem | undefined, dataTransfer: vscode.DataTransfer, token: vscode.CancellationToken): Thenable<void> | void {
 
-        console.log('[cl.eide] handleDrop');
+        console.log('[cl.zide] handleDrop');
 
         if (target == undefined)
             return;
@@ -766,7 +766,7 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
         console.log(target);
 
         if (!ProjTreeItem.isVirtualFolderItem(target.type) && target.type != TreeItemType.PROJECT) {
-            console.log(`[cl.eide] 'target' is not a virtual folder`);
+            console.log(`[cl.zide] 'target' is not a virtual folder`);
             return; // it's not a virtual folder
         }
 
@@ -777,7 +777,7 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
         let dataTransferItem: vscode.DataTransferItem | undefined;
 
         // DataTransferItem struct:
-        //   data:{ value: '{"id":"cl.eide.view.projects","itemHandles":[0/…3b0d9bcc1193787cc:PROJECT/0:user/0:dlink.h"]}' }
+        //   data:{ value: '{"id":"cl.zide.view.projects","itemHandles":[0/…3b0d9bcc1193787cc:PROJECT/0:user/0:dlink.h"]}' }
         dataTransferItem = dataTransfer.get(ProjectDataProvider.PROJECT_TREE_ITEM_MIME_ID);
         if (dataTransferItem) {
 
@@ -785,7 +785,7 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
                 .filter(s => s.includes(`${targetProjectUid}:PROJECT/`))
                 .map(s => s.replace(/^.+?:PROJECT\//, `${VirtualSource.rootName}/`).replace(/\d+:/g, ''));
 
-            console.log(`[cl.eide] try drop file items '[ ${vPaths.join(', ')} ]' -> '${targetVirtualFolder.path}/'`);
+            console.log(`[cl.zide] try drop file items '[ ${vPaths.join(', ')} ]' -> '${targetVirtualFolder.path}/'`);
 
             const vSourceManager = targetProject.getVirtualSourceManager();
 
@@ -793,7 +793,7 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
 
                 // if it is itself, ignore
                 if (vpath == targetVirtualFolder.path) {
-                    console.log(`[cl.eide] '${vpath}' -> '${targetVirtualFolder.path}/' it is itself, ignore`);
+                    console.log(`[cl.zide] '${vpath}' -> '${targetVirtualFolder.path}/' it is itself, ignore`);
                     continue;
                 }
 
@@ -803,7 +803,7 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
                     const nf = vSourceManager.addFile(targetVirtualFolder.path, vf.path);
                     if (nf) { // moved done, del old
                         vSourceManager.removeFile(vpath);
-                        console.log(`[cl.eide] '${vpath}' -> '${targetVirtualFolder.path}/' moved done`);
+                        console.log(`[cl.zide] '${vpath}' -> '${targetVirtualFolder.path}/' moved done`);
                     }
                     continue;
                 }
@@ -814,7 +814,7 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
                     const npath = vSourceManager.insertFolder(targetVirtualFolder.path, vd);
                     if (npath) { // moved done, del old
                         vSourceManager.removeFolder(vpath);
-                        console.log(`[cl.eide] '${vpath}' -> '${targetVirtualFolder.path}/' moved done`);
+                        console.log(`[cl.zide] '${vpath}' -> '${targetVirtualFolder.path}/' moved done`);
                     }
                     continue;
                 }
@@ -828,7 +828,7 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
         dataTransferItem = dataTransfer.get('text/uri-list');
         if (dataTransferItem) {
             const fileList: string[] = (<string>dataTransferItem.value).split(/\r\n|\n/).map(s => vscode.Uri.parse(s).fsPath);
-            console.log(`[cl.eide] drop files: { ${fileList.join(',')} }`);
+            console.log(`[cl.zide] drop files: { ${fileList.join(',')} }`);
             targetProject.getVirtualSourceManager().addFiles(targetVirtualFolder.path, fileList);
             return;
         }
@@ -893,7 +893,7 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
          * active workspace control btns
          */
         if (validList.length > 1) {
-            vscode.commands.executeCommand('setContext', 'cl.eide.isWorkspaceProject', true);
+            vscode.commands.executeCommand('setContext', 'cl.zide.isWorkspaceProject', true);
         }
 
         for (const wsFile of validList) {
@@ -971,25 +971,25 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
             const activeProj = this.getActiveProject();
 
             if (name == 'project') {
-                bar.text = `EIDE Project: ${activeProj?.getCurrentTarget() || 'unspecified'}`;
+                bar.text = `ZIDE Project: ${activeProj?.getCurrentTarget() || 'unspecified'}`;
                 if (activeProj) {
-                    let txt = `Switch target for eide project:`;
+                    let txt = `Switch target for zide project:`;
                     txt += `${os.EOL}  - path: \`${activeProj.getProjectRoot().path}\``;
                     bar.tooltip = new vscode.MarkdownString(txt);
                 } else {
-                    bar.tooltip = `Switch target for eide project`;
+                    bar.tooltip = `Switch target for zide project`;
                 }
             }
 
             else if (name == 'build') {
                 bar.text = `$(tools) Build`;
                 if (activeProj) {
-                    let txt = `Build eide project:`;
+                    let txt = `Build zide project:`;
                     let repath = activeProj.ToRelativePath(activeProj.getExecutablePath());
                     txt += `${os.EOL}  - output: \`${repath}\``;
                     bar.tooltip = new vscode.MarkdownString(txt);
                 } else {
-                    bar.tooltip = `Build eide project`;
+                    bar.tooltip = `Build zide project`;
                 }
             }
 
@@ -1021,20 +1021,20 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
 
     syncReloadPendingContext() {
         const pending = this.hasReloadPending?.() ?? false;
-        void vscode.commands.executeCommand('setContext', 'cl.eide.reloadPending', pending);
+        void vscode.commands.executeCommand('setContext', 'cl.zide.reloadPending', pending);
         // disable statusbar buttons when pending, 
         // because they will cause error if click when project is in reloading
         const buildBar = StatusBarManager.getInstance().get('build');
         const flashBar = StatusBarManager.getInstance().get('flash');
         const projectBar = StatusBarManager.getInstance().get('project');
         if (buildBar) {
-            buildBar.command = pending ? undefined : '_cl.eide.statusbar.build';
+            buildBar.command = pending ? undefined : '_cl.zide.statusbar.build';
         }
         if (flashBar) {
-            flashBar.command = pending ? undefined : '_cl.eide.statusbar.flash';
+            flashBar.command = pending ? undefined : '_cl.zide.statusbar.flash';
         }
         if (projectBar) {
-            projectBar.command = pending ? undefined : '_cl.eide.statusbar.switch-target';
+            projectBar.command = pending ? undefined : '_cl.zide.statusbar.switch-target';
         }
     }
 
@@ -1902,7 +1902,7 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
 
         // check workspace
         if (!detectProject(wsFolder)) { // not found project file, open workspace ?
-            const msg = `Not found eide project in this workspace !, Open this workspace directly ?`;
+            const msg = `Not found zide project in this workspace !, Open this workspace directly ?`;
             const selection = await vscode.window.showInformationMessage(msg, continue_text, cancel_text);
             if (selection === continue_text) { WorkspaceManager.getInstance().openWorkspace(new File(workspaceFilePath)); }
             return undefined;
@@ -1995,7 +1995,7 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
             const ans = await vscode.window.showWarningMessage(msg, `Ok`, 'Skip');
             if (ans != 'Skip') {
                 if (ans == 'Ok') { // jump to setup toolchain
-                    vscode.commands.executeCommand('eide.operation.install_toolchain');
+                    vscode.commands.executeCommand('zide.operation.install_toolchain');
                 }
                 return;
             }
@@ -2044,12 +2044,12 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
             if (!project0workspacefile)
                 project0workspacefile = basePrj.workspaceFile;
 
-            const eidePrjCfg = basePrj.prjConfig.config;
-            const eideFolder = File.fromArray([prjRoot.path, AbstractProject.EIDE_DIR]);
+            const zidePrjCfg = basePrj.prjConfig.config;
+            const zideFolder = File.fromArray([prjRoot.path, AbstractProject.ZIDE_DIR]);
 
             // export project env
             {
-                const envFile = File.fromArray([eideFolder.path, 'env.ini']);
+                const envFile = File.fromArray([zideFolder.path, 'env.ini']);
                 const envCont = [
                     `###########################################################`,
                     `#              project environment variables`,
@@ -2067,8 +2067,8 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
             }
 
             // file groups
-            eidePrjCfg.virtualFolder = iarproj.fileGroups;
-            eidePrjCfg.outDir = 'build';
+            zidePrjCfg.virtualFolder = iarproj.fileGroups;
+            zidePrjCfg.outDir = 'build';
             basePrj.prjConfig.setToolchain(toolchainType);
 
             // targets
@@ -2081,14 +2081,14 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
                 const targetName = tname;
                 const iarTarget = iarproj.targets[tname];
 
-                const nEideTarget: ProjectTargetInfo = {
+                const nZideTarget: ProjectTargetInfo = {
                     excludeList: iarTarget.excludeList,
-                    toolchain: eidePrjCfg.toolchain,
-                    toolchainConfig: copyObject(eidePrjCfg.toolchainConfig),
-                    toolchainConfigMap: copyObject(eidePrjCfg.toolchainConfigMap),
-                    uploader: eidePrjCfg.uploader,
-                    uploadConfig: copyObject(eidePrjCfg.uploadConfig),
-                    uploadConfigMap: copyObject(eidePrjCfg.uploadConfigMap),
+                    toolchain: zidePrjCfg.toolchain,
+                    toolchainConfig: copyObject(zidePrjCfg.toolchainConfig),
+                    toolchainConfigMap: copyObject(zidePrjCfg.toolchainConfigMap),
+                    uploader: zidePrjCfg.uploader,
+                    uploadConfig: copyObject(zidePrjCfg.uploadConfig),
+                    uploadConfigMap: copyObject(zidePrjCfg.uploadConfigMap),
                     cppPreprocessAttrs: {
                         name: 'default',
                         incList: [],
@@ -2098,16 +2098,16 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
                     builderOptions: {},
                     settings: {}
                 };
-                eidePrjCfg.targets[targetName] = nEideTarget;
+                zidePrjCfg.targets[targetName] = nZideTarget;
 
-                nEideTarget.cppPreprocessAttrs.defineList = toArray(iarTarget.settings['ICCARM.CCDefines']);
-                nEideTarget.cppPreprocessAttrs.incList = toArray(iarTarget.settings['ICCARM.CCIncludePath2']);
+                nZideTarget.cppPreprocessAttrs.defineList = toArray(iarTarget.settings['ICCARM.CCDefines']);
+                nZideTarget.cppPreprocessAttrs.incList = toArray(iarTarget.settings['ICCARM.CCIncludePath2']);
 
                 //
                 // compiler base config
                 //
                 const compilerMod = <ArmBaseCompileConfigModel>basePrj.prjConfig.toolchainConfigModel;
-                const compilerOpt = <ArmBaseCompileData>nEideTarget.toolchainConfig;
+                const compilerOpt = <ArmBaseCompileData>nZideTarget.toolchainConfig;
 
                 if (iarTarget.core) {
                     const expname = iarTarget.core;
@@ -2130,17 +2130,17 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
                 //
                 // builder options
                 //
-                const toolchain = ToolchainManager.getInstance().getToolchain(eidePrjCfg.type, eidePrjCfg.toolchain);
+                const toolchain = ToolchainManager.getInstance().getToolchain(zidePrjCfg.type, zidePrjCfg.toolchain);
                 const builderConfig = toolchain.getDefaultConfig();
 
-                const iar2eideOptsMap = iarParser.IAR2EIDE_OPTS_MAP;
+                const iar2zideOptsMap = iarParser.IAR2ZIDE_OPTS_MAP;
 
                 // set iar compiler options
-                for (const cfgGroupName in iar2eideOptsMap) {
+                for (const cfgGroupName in iar2zideOptsMap) {
 
-                    const optsGrp = iar2eideOptsMap[cfgGroupName];
+                    const optsGrp = iar2zideOptsMap[cfgGroupName];
 
-                    for (const iarsname in iar2eideOptsMap[cfgGroupName]) {
+                    for (const iarsname in iar2zideOptsMap[cfgGroupName]) {
 
                         if (typeof iarTarget.settings[iarsname] != 'string')
                             continue;
@@ -2148,9 +2148,9 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
                         const iarOptVal = <string>iarTarget.settings[iarsname];
 
                         for (const fieldname in optsGrp[iarsname]) {
-                            const eideOptVal = optsGrp[iarsname][fieldname][iarOptVal];
-                            if (eideOptVal) {
-                                (<any>builderConfig)[cfgGroupName][fieldname] = eideOptVal;
+                            const zideOptVal = optsGrp[iarsname][fieldname][iarOptVal];
+                            if (zideOptVal) {
+                                (<any>builderConfig)[cfgGroupName][fieldname] = zideOptVal;
                             }
                         }
                     }
@@ -2235,23 +2235,23 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
                     }
                 }
 
-                nEideTarget.builderOptions[toolchainType] = builderConfig;
+                nZideTarget.builderOptions[toolchainType] = builderConfig;
             }
 
             // init current target
 
             const tname = firstTargetName;
-            const curTarget: any = eidePrjCfg.targets[tname];
-            eidePrjCfg.mode = tname; // set current target name
+            const curTarget: any = zidePrjCfg.targets[tname];
+            zidePrjCfg.mode = tname; // set current target name
             for (const key in curTarget) {
                 if (key === 'cppPreprocessAttrs') {
-                    eidePrjCfg.dependenceList =
+                    zidePrjCfg.dependenceList =
                         [{ groupName: 'custom', depList: [curTarget[key]] }];
                     continue;
                 }
                 if (!MAPPED_KEYS_IN_TARGET_INFO.includes(key))
                     continue;
-                (<any>eidePrjCfg)[key] = curTarget[key];
+                (<any>zidePrjCfg)[key] = curTarget[key];
             }
 
             // save all config
@@ -2300,7 +2300,7 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
         }, false);
 
         const nPrjConfig = basePrj.prjConfig.config;
-        const eideFolder = File.fromArray([ePrjRoot.path, AbstractProject.EIDE_DIR]);
+        const zideFolder = File.fromArray([ePrjRoot.path, AbstractProject.ZIDE_DIR]);
 
         nPrjConfig.virtualFolder = ePrjInfo.virtualSource;
         nPrjConfig.outDir = 'build';
@@ -2314,13 +2314,13 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
         }
 
         // init source args
-        const srcOptsObj = <SourceFileOptions>{ version: EIDE_FILE_OPTION_VERSION, options: {} };
-        srcOptsObj.version = EIDE_FILE_OPTION_VERSION;
+        const srcOptsObj = <SourceFileOptions>{ version: ZIDE_FILE_OPTION_VERSION, options: {} };
+        srcOptsObj.version = ZIDE_FILE_OPTION_VERSION;
 
         // init all target
         for (const eTarget of ePrjInfo.targets) {
 
-            const nEideTarget: ProjectTargetInfo = {
+            const nZideTarget: ProjectTargetInfo = {
                 excludeList: eTarget.excList,
                 toolchain: nPrjConfig.toolchain,
                 toolchainConfig: copyObject(nPrjConfig.toolchainConfig),
@@ -2338,12 +2338,12 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
                 settings: {}
             };
 
-            nEideTarget.cppPreprocessAttrs.defineList = eTarget.builldArgs.cMacros;
-            nEideTarget.cppPreprocessAttrs.incList = eTarget.builldArgs.cIncDirs;
-            nEideTarget.cppPreprocessAttrs.libList = eTarget.builldArgs.linkerLibSearchDirs;
+            nZideTarget.cppPreprocessAttrs.defineList = eTarget.builldArgs.cMacros;
+            nZideTarget.cppPreprocessAttrs.incList = eTarget.builldArgs.cIncDirs;
+            nZideTarget.cppPreprocessAttrs.libList = eTarget.builldArgs.linkerLibSearchDirs;
 
             // for arm gcc toolchain
-            if (nEideTarget.toolchain == 'GCC') {
+            if (nZideTarget.toolchain == 'GCC') {
 
                 var guessArmCpuType = (archName?: string): string | undefined => {
                     if (!archName)
@@ -2365,20 +2365,20 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
                     return armCpuTypeMap[archName.toLowerCase()];
                 };
 
-                const compilerOpt = <ArmBaseCompileData>nEideTarget.toolchainConfig;
+                const compilerOpt = <ArmBaseCompileData>nZideTarget.toolchainConfig;
                 compilerOpt.cpuType = guessArmCpuType(eTarget.archName) || 'Cortex-M3';
                 compilerOpt.floatingPointHardware = ArmCpuUtils.hasFpu(compilerOpt.cpuType) ? 'single' : 'none';
                 compilerOpt.useCustomScatterFile = true;
                 compilerOpt.scatterFilePath = eTarget.linkerScriptPath || '';
             }
             // for riscv gcc toolchain
-            else if (nEideTarget.toolchain == 'RISCV_GCC') {
-                const compilerOpt = <RiscvCompileData>nEideTarget.toolchainConfig;
+            else if (nZideTarget.toolchain == 'RISCV_GCC') {
+                const compilerOpt = <RiscvCompileData>nZideTarget.toolchainConfig;
                 compilerOpt.linkerScriptPath = eTarget.linkerScriptPath || '';
             }
             // for any gcc toolchain
-            else if (nEideTarget.toolchain == 'ANY_GCC') {
-                const compilerOpt = <AnyGccCompileData>nEideTarget.toolchainConfig;
+            else if (nZideTarget.toolchain == 'ANY_GCC') {
+                const compilerOpt = <AnyGccCompileData>nZideTarget.toolchainConfig;
                 compilerOpt.linkerScriptPath = eTarget.linkerScriptPath || '';
             }
 
@@ -2472,7 +2472,7 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
                     }
                 }
 
-                nEideTarget.builderOptions[toolchain.name] = toolchainDefConf;
+                nZideTarget.builderOptions[toolchain.name] = toolchainDefConf;
             }
 
             // setup source options
@@ -2501,7 +2501,7 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
                 }
             }
 
-            nPrjConfig.targets[eTarget.name] = nEideTarget;
+            nPrjConfig.targets[eTarget.name] = nZideTarget;
         }
 
         // init current target
@@ -2522,7 +2522,7 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
         // save all config
         basePrj.prjConfig.Save();
         // save src options
-        const optFile = File.fromArray([basePrj.rootFolder.path, AbstractProject.EIDE_DIR, `files.options.yml`]);
+        const optFile = File.fromArray([basePrj.rootFolder.path, AbstractProject.ZIDE_DIR, `files.options.yml`]);
         optFile.Write(view_str$prompt$filesOptionsComment + yaml.stringify(srcOptsObj, { indent: 4, lineWidth: 1000 }));
 
         // switch project
@@ -2589,8 +2589,8 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
         };
 
         // init source args
-        const srcOptsObj = <SourceFileOptions>{ version: EIDE_FILE_OPTION_VERSION, options: {} };
-        srcOptsObj.version = EIDE_FILE_OPTION_VERSION;
+        const srcOptsObj = <SourceFileOptions>{ version: ZIDE_FILE_OPTION_VERSION, options: {} };
+        srcOptsObj.version = ZIDE_FILE_OPTION_VERSION;
         const setupSourceOpts = (vFolderPath: string, srcFilePath: string) => {
             for (const keilTarget of targets) {
                 if (srcOptsObj.options[keilTarget.name] == undefined)
@@ -2898,12 +2898,12 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
 
         // save env
         if (Object.keys(prjenv).length > 0) {
-            File.fromArray([baseInfo.rootFolder.path, AbstractProject.EIDE_DIR, 'env.ini'])
+            File.fromArray([baseInfo.rootFolder.path, AbstractProject.ZIDE_DIR, 'env.ini'])
                 .Write(ini.stringify(prjenv));
         }
 
         // save src options
-        const optFile = File.fromArray([baseInfo.rootFolder.path, AbstractProject.EIDE_DIR, `files.options.yml`]);
+        const optFile = File.fromArray([baseInfo.rootFolder.path, AbstractProject.ZIDE_DIR, `files.options.yml`]);
         optFile.Write(view_str$prompt$filesOptionsComment + yaml.stringify(srcOptsObj, { indent: 4, lineWidth: 1000 }));
 
         // switch project
@@ -2954,7 +2954,7 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
                                 fs.renameSync(wsFile.path, targetWorkspaceFile.path);
 
                                 // rename project
-                                if (templateFile.suffix != '.ewt') { // ignore eide workspace project
+                                if (templateFile.suffix != '.ewt') { // ignore zide workspace project
 
                                     // init project
                                     if (!detectProject(targetDir))
@@ -2962,7 +2962,7 @@ class ProjectDataProvider implements vscode.TreeDataProvider<ProjTreeItem>, vsco
 
                                     try {
                                         await doMigration(targetDir);
-                                        const pfile = File.from(targetDir.path, AbstractProject.EIDE_DIR, AbstractProject.prjConfigName);
+                                        const pfile = File.from(targetDir.path, AbstractProject.ZIDE_DIR, AbstractProject.prjConfigName);
                                         const prjConf = ProjectConfiguration.parseProjectFile(pfile.Read());
                                         prjConf.name = option.name; // set project name
                                         if (prjConf.miscInfo) prjConf.miscInfo.uid = undefined; // reset uid
@@ -3195,7 +3195,7 @@ export class ProjectExplorer implements CustomConfigurationProvider {
         );
         this.cppcheck_diag = vscode.languages.createDiagnosticCollection('cppcheck');
 
-        this.view = vscode.window.createTreeView('cl.eide.view.projects', {
+        this.view = vscode.window.createTreeView('cl.zide.view.projects', {
             treeDataProvider: this.dataProvider,
             dragAndDropController: this.dataProvider,
             canSelectMany: true,
@@ -3225,8 +3225,8 @@ export class ProjectExplorer implements CustomConfigurationProvider {
         context.subscriptions.push(vscode.commands.registerCommand(ProjTreeItem.ITEM_CLICK_EVENT, (item) => this.OnTreeItemClick(item)));
 
         // create vsc output channel
-        this.cppcheck_out = vscode.window.createOutputChannel('eide-static-check-log');
-        this.cppToolsOut = vscode.window.createOutputChannel('eide-cpptools-log');
+        this.cppcheck_out = vscode.window.createOutputChannel('zide-static-check-log');
+        this.cppToolsOut = vscode.window.createOutputChannel('zide-cpptools-log');
 
         // register doc event
         context.subscriptions.push(vscode.workspace.onDidSaveTextDocument((doc) => {
@@ -3251,12 +3251,12 @@ export class ProjectExplorer implements CustomConfigurationProvider {
 
         // register path completion item provider
         context.subscriptions.push(
-            vscode.languages.registerCompletionItemProvider({ scheme: 'file', pattern: '**/*.eide.*.{yml,yaml}' }, this.newPathStringCompletionItemProvider(), '/', '\\'));
+            vscode.languages.registerCompletionItemProvider({ scheme: 'file', pattern: '**/*.zide.*.{yml,yaml}' }, this.newPathStringCompletionItemProvider(), '/', '\\'));
 
         // register task end event callback
         context.subscriptions.push(
             vscode.tasks.onDidEndTask((t) => {
-                if (['eide.flasher', 'eide.builder'].includes(t.execution.task.source)) {
+                if (['zide.flasher', 'zide.builder'].includes(t.execution.task.source)) {
                     this.dataProvider.updateStatusBarForActiveProjects();
                 }
             }));
@@ -3337,9 +3337,9 @@ export class ProjectExplorer implements CustomConfigurationProvider {
     //  cpptools intellisense provider
     // -----------------------------------------
 
-    name: string = 'eide';
+    name: string = 'zide';
 
-    extensionId: string = 'cl.eide';
+    extensionId: string = 'cl.zide';
 
     private isRegisteredCpptoolsProvider: boolean = false;
 
@@ -3707,7 +3707,7 @@ export class ProjectExplorer implements CustomConfigurationProvider {
 
         try {
             await vscode.window.withProgress({
-                location: { viewId: 'cl.eide.view.projects' },
+                location: { viewId: 'cl.zide.view.projects' },
                 title: view_str$prompt$need_reload_project.replace('{}', prj.getProjectName()),
                 cancellable: true,
             }, async (_progress, token) => {
@@ -4232,8 +4232,8 @@ export class ProjectExplorer implements CustomConfigurationProvider {
                     const diag = new vscode.Diagnostic(range,
                         `warning: ${ele.name} is not implemented and will always fail`, 
                         vscode.DiagnosticSeverity.Warning);
-                    diag.source = "eide";
-                    diag.code = EideDiagnosticCode.GCC_SYS_STUB_MISSED;
+                    diag.source = "zide";
+                    diag.code = ZideDiagnosticCode.GCC_SYS_STUB_MISSED;
                     diags.push(diag);
                 }
                 diag_res[logFile.path] = diags;
@@ -4284,7 +4284,7 @@ export class ProjectExplorer implements CustomConfigurationProvider {
             if (envConfig) {
                 /////////////////////////////
                 // prj build order
-                let cfgName = 'EIDE_BUILD_ORDER';
+                let cfgName = 'ZIDE_BUILD_ORDER';
                 // parse global config
                 if (envConfig[cfgName]) {
                     buildCfg.order = parseInt(envConfig[cfgName]);
@@ -4296,7 +4296,7 @@ export class ProjectExplorer implements CustomConfigurationProvider {
                 }
                 /////////////////////////////
                 // ignore if failed ?
-                cfgName = 'EIDE_BUILD_SKIP_IF_FAILED';
+                cfgName = 'ZIDE_BUILD_SKIP_IF_FAILED';
                 // parse global config
                 if (envConfig[cfgName]) {
                     buildCfg.ignoreFailed = (parseInt(envConfig[cfgName])) === 1;
@@ -4325,7 +4325,7 @@ export class ProjectExplorer implements CustomConfigurationProvider {
         });
 
         /* gen params file */
-        const paramsFile = File.fromArray([os.tmpdir(), `eide-ws-params.tmp`]);
+        const paramsFile = File.fromArray([os.tmpdir(), `zide-ws-params.tmp`]);
         paramsFile.Write(JSON.stringify(cmdList));
 
         /* launch */
@@ -4656,7 +4656,7 @@ export class ProjectExplorer implements CustomConfigurationProvider {
 
     private async startDownloadCmsisPack(): Promise<File | Error | undefined> {
 
-        // URL: https://api.github.com/repos/github0null/eide-cmsis-pack/contents/packages
+        // URL: https://api.github.com/repos/github0null/zide-cmsis-pack/contents/packages
         const repoUrl = redirectHost('api.github.com/repos/' + SettingManager.GetInstance().getCmsisPackRepositoryUrl());
 
         return await vscode.window.withProgress<File | Error | undefined>({
@@ -4700,7 +4700,7 @@ export class ProjectExplorer implements CustomConfigurationProvider {
                 let packageFile: File | undefined;
 
                 const resManager = ResManager.GetInstance();
-                const packDir = File.fromArray([resManager.getEideHomeFolder().path, 'pack', 'cmsis']);
+                const packDir = File.fromArray([resManager.getZideHomeFolder().path, 'pack', 'cmsis']);
                 packDir.CreateDir(true);
 
                 // read cache
@@ -4827,11 +4827,11 @@ export class ProjectExplorer implements CustomConfigurationProvider {
             let resIgnoreList: string[] = [];
 
             const defExcludeList: string[] = [
-                '*.eide-template',
+                '*.zide-template',
                 '*.log',
                 '*.ept',
-                `${AbstractProject.EIDE_DIR}${File.sep}*.db3`,
-                `${AbstractProject.EIDE_DIR}${File.sep}*.dat`,
+                `${AbstractProject.ZIDE_DIR}${File.sep}*.db3`,
+                `${AbstractProject.ZIDE_DIR}${File.sep}*.dat`,
             ];
 
             if (SettingManager.instance().isEnableClangdConfigGenerator())
@@ -7091,7 +7091,7 @@ export class ProjectExplorer implements CustomConfigurationProvider {
         const docName = NodePath.basename(doc.uri.fsPath);
 
         this.yamlCfgProviderList.forEach((val, key) => {
-            if (docName.endsWith(`eide.${key}.yaml`)) {
+            if (docName.endsWith(`zide.${key}.yaml`)) {
                 val.onYamlDocSaved(doc);
             }
         });
@@ -7102,7 +7102,7 @@ export class ProjectExplorer implements CustomConfigurationProvider {
         const docName = NodePath.basename(doc.uri.fsPath);
 
         this.yamlCfgProviderList.forEach((val, key) => {
-            if (docName.endsWith(`eide.${key}.yaml`)) {
+            if (docName.endsWith(`zide.${key}.yaml`)) {
                 val.onYamlDocClosed(doc);
             }
         });
@@ -7117,7 +7117,7 @@ export class ProjectExplorer implements CustomConfigurationProvider {
 
         // provide file
         const prj = this.dataProvider.GetProjectByIndex(item.val.projectIndex);
-        const defFileName = `${prj.getUid()}.eide.${id}.yaml`;
+        const defFileName = `${prj.getUid()}.zide.${id}.yaml`;
         const res = await provider.provideYamlDocument(prj, item, defFileName);
         if (res instanceof Error) {
             GlobalEvent.emit('msg', ExceptionToMessage(res, 'Warning'));
@@ -7315,7 +7315,7 @@ export class ProjectExplorer implements CustomConfigurationProvider {
             },
             name: isChinese ? '编译器根目录位置' : 'Toolchain Path',
             data: <SimpleUIConfigData_input>{
-                placeHolder: 'toolchain dir, like: ${userHome}/.eide/tools/<toolchain_id>',
+                placeHolder: 'toolchain dir, like: ${userHome}/.zide/tools/<toolchain_id>',
                 value: toolchainPath,
                 default: toolchainPath
             }
@@ -7389,7 +7389,7 @@ export class ProjectExplorer implements CustomConfigurationProvider {
 
             try {
 
-                const REPO_PATH = 'github0null/eide_shell_flasher_index';
+                const REPO_PATH = 'github0null/zide_shell_flasher_index';
 
                 // get index.json
                 //
@@ -7482,7 +7482,7 @@ export class ProjectExplorer implements CustomConfigurationProvider {
                     if (res.locationType == 'workspace')
                         installDir = File.fromArray([project.getRootDir().path, res.location]);
                     else // global
-                        installDir = File.fromArray([resManager.getEideToolsInstallDir(), res.location]);
+                        installDir = File.fromArray([resManager.getZideToolsInstallDir(), res.location]);
 
                     // if have a resource and not install, download it
                     if (res.zipType != 'none' && installDir.IsDir() == false) {
@@ -7510,7 +7510,7 @@ export class ProjectExplorer implements CustomConfigurationProvider {
                                 GlobalEvent.emit('globalLog.append', `\n----- user canceled -----\n`);
                                 return;
                             } else {
-                                return new Error(`Setup command failed, see detail in 'OUTPUT panel' -> 'eide.log' !`);
+                                return new Error(`Setup command failed, see detail in 'OUTPUT panel' -> 'zide.log' !`);
                             }
                         }
                     }
@@ -7974,7 +7974,7 @@ export class ProjectExplorer implements CustomConfigurationProvider {
 
             try {
 
-                // try to show it by eide, if failed, show it 
+                // try to show it by zide, if failed, show it 
                 // by vscode default api
                 if (this.showBinaryFiles(file, isPreview))
                     return;
@@ -8126,7 +8126,7 @@ class VFolderSourcePathsModifier implements ModifiableYamlConfigProvider {
 
     id: string = 'src-path-cfg';
 
-    // KV: <ymlFileName, {vFolderPath: string, project: EideProject}>
+    // KV: <ymlFileName, {vFolderPath: string, project: ZideProject}>
     private prjFolderSourceChangesMap: Map<string, { vFolderPath: string, project: AbstractProject }> = new Map();
 
     async provideYamlDocument(project: AbstractProject, item: ProjTreeItem, defFileName: string): Promise<File | Error | undefined> {
@@ -8274,7 +8274,7 @@ class ProjectAttrModifier implements ModifiableYamlConfigProvider {
 
     id: string = 'prj-attr-cfg';
 
-    // KV: <ymlFileName, EideProject>
+    // KV: <ymlFileName, ZideProject>
     private prjCusDepChangesMap: Map<string, AbstractProject> = new Map();
 
     async provideYamlDocument(project: AbstractProject, viewItem: ProjTreeItem, defFileName: string): Promise<File | Error | undefined> {

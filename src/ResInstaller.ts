@@ -102,7 +102,7 @@ export class ResInstaller {
     private builtin_tool_list: string[] = [];
 
     private downloadSites: string[] = [
-        'https://raw.githubusercontent.com/github0null/eide-resource/master/packages'
+        'https://raw.githubusercontent.com/github0null/zide-resource/master/packages'
     ];
 
     private constructor() {
@@ -244,7 +244,7 @@ export class ResInstaller {
     isToolInstalled(name: ExternalToolName): boolean | undefined {
         const tool = this.toolsMap.get(name.toLowerCase());
         if (tool) {
-            const instDir = File.fromArray([ResManager.GetInstance().getEideToolsInstallDir(), tool.resource_name]);
+            const instDir = File.fromArray([ResManager.GetInstance().getZideToolsInstallDir(), tool.resource_name]);
             if (instDir.IsDir()) {
                 if (tool.resource_repath_in_pack) {
                     const p = File.normalize(instDir.path + File.sep + tool.resource_repath_in_pack);
@@ -297,8 +297,8 @@ export class ResInstaller {
 
     async refreshExternalToolsIndex(force?: boolean) {
 
-        const indexCacheFile = File.from(ResManager.instance().GetTmpDir().path, 'eide_external_tools.index.json');
-        const defIdxUrl = 'https://raw.githubusercontent.com/github0null/eide_default_external_tools_index/master/index.json';
+        const indexCacheFile = File.from(ResManager.instance().GetTmpDir().path, 'zide_external_tools.index.json');
+        const defIdxUrl = 'https://raw.githubusercontent.com/github0null/zide_default_external_tools_index/master/index.json';
         const idxUrl = utility.redirectHost(
             SettingManager.GetInstance().getExternalToolsIndexUrl() || defIdxUrl);
 
@@ -461,7 +461,7 @@ export class ResInstaller {
 
                         const resManager = ResManager.GetInstance();
                         const unzipper = new SevenZipper(resManager.Get7zDir());
-                        const outDir = File.fromArray([resManager.getEideToolsInstallDir(), resourceName]);
+                        const outDir = File.fromArray([resManager.getZideToolsInstallDir(), resourceName]);
 
                         platform.DeleteAllChildren(outDir);
                         outDir.CreateDir(true);
@@ -511,7 +511,7 @@ export class ResInstaller {
                                         GlobalEvent.emit('globalLog.append', `\n----- user canceled -----\n`);
                                         GlobalEvent.emit('msg', newMessage('Info', `Installation has been canceled !`));
                                     } else {
-                                        GlobalEvent.emit('msg', newMessage('Warning', `Install failed, see detail in 'eide.log' !`));
+                                        GlobalEvent.emit('msg', newMessage('Warning', `Install failed, see detail in 'zide.log' !`));
                                     }
 
                                     resolveIf(false);
@@ -520,9 +520,9 @@ export class ResInstaller {
                             }
                         }
 
-                        // update eide settings
+                        // update zide settings
                         if (toolInfo.setting_name) {
-                            let setting_val = ['${userHome}', '.eide', 'tools', resourceName].join(File.sep);
+                            let setting_val = ['${userHome}', '.zide', 'tools', resourceName].join(File.sep);
                             setting_val = toolInfo.resource_repath_in_pack ? `${setting_val}/${toolInfo.resource_repath_in_pack}` : setting_val;
                             SettingManager.GetInstance().setConfigValue(toolInfo.setting_name, File.ToUnixPath(setting_val));
                         }
@@ -575,7 +575,7 @@ export class ResInstaller {
                 .showWarningMessage(msg, txt_jump2settings)
                 .then((item) => {
                     if (item) {
-                        SettingManager.jumpToSettings(setting_name || '@ext:cl.eide');
+                        SettingManager.jumpToSettings(setting_name || '@ext:cl.zide');
                     }
                 });
             return false;
@@ -595,7 +595,7 @@ export class ResInstaller {
         if (!item) { return false; } // user canceled, exit
 
         if (item == txt_jump2settings) { // user select set it, jump to setting
-            SettingManager.jumpToSettings(`${SettingManager.TAG}.${toolInfo.setting_name}` || '@ext:cl.eide');
+            SettingManager.jumpToSettings(`${SettingManager.TAG}.${toolInfo.setting_name}` || '@ext:cl.zide');
             return false;
         }
 

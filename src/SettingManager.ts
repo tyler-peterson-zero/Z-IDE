@@ -65,12 +65,12 @@ function formatPath(path: string): string {
 
 export class SettingManager {
 
-    public static readonly TAG = 'EIDE';
+    public static readonly TAG = 'ZIDE';
 
     private _event: events.EventEmitter;
     private pathCache: Map<string, string>;
     private envPathCache: Map<string, string>;
-    private eideEnv: Map<string, string>;
+    private zideEnv: Map<string, string>;
 
     private _checkStatus: INIStatus = {
         'MDK': false,
@@ -83,16 +83,16 @@ export class SettingManager {
 
         this.pathCache = new Map();
         this.envPathCache = new Map();
-        this.eideEnv = new Map();
+        this.zideEnv = new Map();
 
         if (context == undefined) {
-            throw new Error('eide context is undefined !');
+            throw new Error('zide context is undefined !');
         }
 
         /* add env */
-        this.eideEnv.set('${eideRoot}', context.extensionPath);
-        this.eideEnv.set('${userRoot}', userhome());
-        this.eideEnv.set('${userHome}', userhome());
+        this.zideEnv.set('${zideRoot}', context.extensionPath);
+        this.zideEnv.set('${userRoot}', userhome());
+        this.zideEnv.set('${userHome}', userhome());
 
         try {
             this.refreshMDKStatus();
@@ -107,30 +107,30 @@ export class SettingManager {
 
                 try {
 
-                    if (e.affectsConfiguration('EIDE.ARM.INI.Path')) {
+                    if (e.affectsConfiguration('ZIDE.ARM.INI.Path')) {
                         this.refreshMDKStatus();
                     }
 
-                    if (e.affectsConfiguration('EIDE.C51.INI.Path')) {
+                    if (e.affectsConfiguration('ZIDE.C51.INI.Path')) {
                         this.refreshC51Status();
                     }
 
-                    if (e.affectsConfiguration('EIDE.Builder.EnvironmentVariables')) {
+                    if (e.affectsConfiguration('ZIDE.Builder.EnvironmentVariables')) {
                         this.syncGlobalEnvVariablesToNodeEnv();
                     }
 
-                    if (e.affectsConfiguration('EIDE.Win32.Msys.Enable')) {
+                    if (e.affectsConfiguration('ZIDE.Win32.Msys.Enable')) {
                         Utility.notifyReloadWindow(view_str$prompt$needReloadToUpdateEnv);
                     }
 
-                    if (e.affectsConfiguration('EIDE.MCP.Server.Enable')) {
+                    if (e.affectsConfiguration('ZIDE.MCP.Server.Enable')) {
                         Utility.notifyReloadWindow(view_str$prompt$needReload);
                     }
 
                     //! 暂时弃用 ccache
                     // // for non-win32 platform, we provide a check when user want to use 'ccache'
                     // if (osType() != 'win32') {
-                    //     if (e.affectsConfiguration('EIDE.Option.ccache')) {
+                    //     if (e.affectsConfiguration('ZIDE.Option.ccache')) {
                     //         const sel = this.getConfiguration().get<string>('Option.ccache');
                     //         if (sel !== 'never') {
                     //             const path = find(`ccache${exeSuffix()}`);
@@ -193,11 +193,11 @@ export class SettingManager {
 
         const wsRoot = WorkspaceManager.getInstance().getWorkspaceRoot();
 
-        if (wsRoot && !this.eideEnv.has('${workspaceFolder}')) {
-            this.eideEnv.set('${workspaceFolder}', wsRoot.path);
+        if (wsRoot && !this.zideEnv.has('${workspaceFolder}')) {
+            this.zideEnv.set('${workspaceFolder}', wsRoot.path);
         }
 
-        this.eideEnv.forEach((value, key) => {
+        this.zideEnv.forEach((value, key) => {
             const regExpr = key.replace('$', '\\$')
                 .replace('{', '\\{')
                 .replace('}', '\\}');
@@ -342,7 +342,7 @@ export class SettingManager {
     }
 
     //! 暂时弃用 ccache
-    // "EIDE.Option.ccache": {
+    // "ZIDE.Option.ccache": {
     //     "type": "string",
     //     "scope": "resource",
     //     "markdownDescription": "%settings.enable.ccache%",

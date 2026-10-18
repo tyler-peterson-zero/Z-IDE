@@ -51,7 +51,7 @@ import {
     view_str$operation$onlineHelp,
     view_str$operation$onlineHelpTooltip
 } from './StringTable';
-import { CreateOptions, ImportOptions, ProjectType } from './EIDETypeDefine';
+import { CreateOptions, ImportOptions, ProjectType } from './ZIDETypeDefine';
 import { File } from '../lib/node-utility/File';
 import { SettingManager, CheckStatus } from './SettingManager';
 import { NetRequest, NetResponse } from '../lib/node-utility/NetRequest';
@@ -67,7 +67,7 @@ import * as fs from 'fs';
 import * as vscode from 'vscode';
 import * as NodePath from 'path';
 import { ResInstaller, ExternalToolName } from './ResInstaller';
-import { AbstractProject } from './EIDEProject';
+import { AbstractProject } from './ZIDEProject';
 import { WorkspaceManager } from './WorkspaceManager';
 import * as child_process from 'child_process';
 
@@ -187,7 +187,7 @@ export class OperationExplorer {
         this.statusIconMap.set(CheckStatus.Section_Failed, 'StatusWarning_16x.svg');
         this.statusIconMap.set(CheckStatus.All_Verified, 'StatusOK_16x.svg');
 
-        this.view = vscode.window.createTreeView('cl.eide.view.operations', { treeDataProvider: this.provider });
+        this.view = vscode.window.createTreeView('cl.zide.view.operations', { treeDataProvider: this.provider });
         this.UpdateView();
 
         SettingManager.GetInstance().on('onChanged', () => {
@@ -210,7 +210,7 @@ export class OperationExplorer {
             label: create_project,
             command: {
                 title: create_project,
-                command: '_cl.eide.Operation.Create'
+                command: '_cl.zide.Operation.Create'
             },
             tooltip: create_project_hit,
             iconPath: vscode.Uri.file(icoPath.path)
@@ -221,7 +221,7 @@ export class OperationExplorer {
             label: open_project,
             command: {
                 title: open_project,
-                command: '_cl.eide.Operation.Open'
+                command: '_cl.zide.Operation.Open'
             },
             tooltip: open_project_hit,
             iconPath: vscode.Uri.file(icoPath.path)
@@ -232,7 +232,7 @@ export class OperationExplorer {
             label: view_str$import_project,
             command: {
                 title: view_str$import_project,
-                command: '_cl.eide.Operation.Import'
+                command: '_cl.zide.Operation.Import'
             },
             tooltip: import_project_hit,
             iconPath: vscode.Uri.file(icoPath.path)
@@ -246,14 +246,14 @@ export class OperationExplorer {
         // const status: CheckStatus = tcList.some((tcName) => toolchainManager.isToolchainPathReady(tcName))
         //     ? CheckStatus.All_Verified
         //     : CheckStatus.All_Failed;
-        // vscode.commands.executeCommand('setContext', 'cl.eide.toolchain_ready', status != CheckStatus.All_Failed);
+        // vscode.commands.executeCommand('setContext', 'cl.zide.toolchain_ready', status != CheckStatus.All_Failed);
         // icoPath = resManager.GetIconByName(<string>this.statusIconMap.get(status));
         icoPath = resManager.GetIconByName('Toolbox_16x.svg');
         this.provider.AddData({
             label: view_str$operation$setToolchainPath,
             command: {
                 title: view_str$operation$setToolchainPath,
-                command: '_cl.eide.Operation.SetToolchainPath'
+                command: '_cl.zide.Operation.SetToolchainPath'
             },
             tooltip: view_str$operation$setToolchainPath,
             iconPath: vscode.Uri.file(icoPath.path)
@@ -266,7 +266,7 @@ export class OperationExplorer {
             label: view_str$operation$setupUtilTools,
             command: {
                 title: 'Setup Utility Tools',
-                command: '_cl.eide.Operation.SetupUtilTools'
+                command: '_cl.zide.Operation.SetupUtilTools'
             },
             tooltip: view_str$operation$setupUtilTools,
             iconPath: vscode.Uri.file(icoPath.path)
@@ -279,7 +279,7 @@ export class OperationExplorer {
             label: view_str$operation$openSettings,
             command: {
                 title: view_str$operation$openSettings,
-                command: '_cl.eide.Operation.openSettings'
+                command: '_cl.zide.Operation.openSettings'
             },
             tooltip: view_str$operation$openSettings,
             iconPath: vscode.Uri.file(icoPath.path)
@@ -290,7 +290,7 @@ export class OperationExplorer {
             label: view_str$operation$onlineHelp,
             command: {
                 title: view_str$operation$onlineHelp,
-                command: '_cl.eide.Operation.onlineHelp'
+                command: '_cl.zide.Operation.onlineHelp'
             },
             tooltip: view_str$operation$onlineHelpTooltip,
             iconPath: vscode.Uri.file(icoPath.path)
@@ -975,7 +975,7 @@ export class OperationExplorer {
 
         if (item.type !== 'Keil_C51' && !item.label.includes('MDK') &&
             item.type !== 'IAR_ARM' && item.type !== 'IAR_STM8')
-            dialogOption.defaultUri = vscode.Uri.file(ResManager.instance().getEideToolsInstallDir());
+            dialogOption.defaultUri = vscode.Uri.file(ResManager.instance().getZideToolsInstallDir());
 
         const path = await vscode.window.showOpenDialog(dialogOption);
         if (path === undefined || path.length === 0) {
@@ -1035,7 +1035,7 @@ export class OperationExplorer {
             if (!detail) {
                 detail = `ID: ${t.resource_name}`;
                 if (t.setting_name) { // built-in
-                    detail += `, Setting: EIDE.${t.setting_name}`;
+                    detail += `, Setting: ZIDE.${t.setting_name}`;
                 } else if (t.url) {
                     detail += `, From: ${t.url}`;
                 }
@@ -1194,7 +1194,7 @@ export class OperationExplorer {
 
         const settingManager = SettingManager.GetInstance();
 
-        // URL: https://api.github.com/repos/github0null/eide-doc/contents/eide-template-list
+        // URL: https://api.github.com/repos/github0null/zide-doc/contents/zide-template-list
         const rawUrl = `api.github.com/repos/${settingManager.getGithubRepositoryUrl()}`;
         const acToken = settingManager.getGithubRepositoryToken();
         const remoteUrl = acToken ? rawUrl : utility.redirectHost(rawUrl); // if token is enabled, not proxy
@@ -1220,7 +1220,7 @@ export class OperationExplorer {
 
                 let repoFileList: GitFileInfo[];
 
-                const cache = resManager.getCache('eide-template-list.json');
+                const cache = resManager.getCache('zide-template-list.json');
                 if (cache && (cache.lastUpdateTime || 0) + (10 * utility.TIME_ONE_MINUTE) > Date.now() &&
                     resManager.getCachedFileByName(cache.name).IsFile()) {
                     repoFileList = JSON.parse(resManager.getCachedFileByName(cache.name).Read());
@@ -1270,7 +1270,7 @@ export class OperationExplorer {
                     repoFileList = res.content;
 
                     resManager.addCache({
-                        name: 'eide-template-list.json',
+                        name: 'zide-template-list.json',
                         lastUpdateTime: Date.now()
                     }, JSON.stringify(repoFileList, undefined, 2));
                 }
@@ -1618,7 +1618,7 @@ export class OperationExplorer {
                     WorkspaceManager.getInstance().openWorkspace(new File(outputDirPath));
                 }
             } else {
-                GlobalEvent.emit('msg', newMessage('Warning', `Clone project failed !, Check log in 'eide.log' panel`));
+                GlobalEvent.emit('msg', newMessage('Warning', `Clone project failed !, Check log in 'zide.log' panel`));
             }
         }
 
@@ -1646,7 +1646,7 @@ export class OperationExplorer {
             canSelectFolders: false,
             canSelectMany: false,
             filters: {
-                'eide project template': ['eide-template', 'ept', 'ewt']
+                'zide project template': ['zide-template', 'ept', 'ewt']
             }
         });
 

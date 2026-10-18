@@ -23,7 +23,7 @@
 */
 
 import * as vscode from 'vscode';
-import { ProjectExplorer } from './EIDEProjectExplorer';
+import { ProjectExplorer } from './ZIDEProjectExplorer';
 import { GlobalEvent } from './GlobalEvents';
 import { mcpClientConnect, mcpClientDisconnect, mcpClientInit } from './mcp/mcp_client';
 

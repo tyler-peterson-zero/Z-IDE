@@ -26,7 +26,7 @@ import * as fs from 'fs';
 import * as net from 'net';
 import * as path from 'path';
 import { ExeModule } from '../../lib/node-utility/Executable';
-import { ProjectExplorer } from '../EIDEProjectExplorer';
+import { ProjectExplorer } from '../ZIDEProjectExplorer';
 import { GlobalEvent } from '../GlobalEvents';
 import { executeTool } from './mcp_impl';
 import {

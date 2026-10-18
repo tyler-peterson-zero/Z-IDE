@@ -3,7 +3,7 @@
 .github
 out
 src
-.EIDE
+.ZIDE
 doc
 **/*.log
 !**/template/*.jflash
@@ -29,9 +29,9 @@ vsc-extension-quickstart.md
 res/template/projects
 *.js.map
 
-# eide makefile template
+# zide makefile template
 .gitmodules
-res/eide_makefile_template
+res/zide_makefile_template
 
 # ignore unused files
 # bin

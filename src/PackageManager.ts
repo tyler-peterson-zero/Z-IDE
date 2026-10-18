@@ -32,11 +32,11 @@ import {
     PackInfo, CurrentDevice, SubFamily, DeviceInfo, Component,
     ConditionGroup, DeviceFamily, ConditionMap,
     ARMRamItem, ARMRomItem, Condition, ArmBaseCompileData, ComponentFileItem
-} from './EIDEProjectModules';
+} from './ZIDEProjectModules';
 import { IToolchian } from './ToolchainManager';
 import { GlobalEvent } from './GlobalEvents';
 import * as fs from 'fs';
-import { AbstractProject } from './EIDEProject';
+import { AbstractProject } from './ZIDEProject';
 import { ExceptionToMessage, newMessage } from './Message';
 import { ResManager } from './ResManager';
 import { ExeCmd } from '../lib/node-utility/Executable';
@@ -1252,7 +1252,7 @@ export class PackageManager {
             reporter(undefined, 'Start parsing package description file ...');
         }
 
-        const postCmdFile = File.fromArray([this.project.getEideDir().path, 'post-install.cmsis-pack.sh']);
+        const postCmdFile = File.fromArray([this.project.getZideDir().path, 'post-install.cmsis-pack.sh']);
         if (postCmdFile.IsFile()) {
             try {
                 let fpath = outDir.ToRelativePath(postCmdFile.path);

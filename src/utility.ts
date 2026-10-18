@@ -318,7 +318,7 @@ export function openocd_getConfigList(category: 'interface' | 'target', projectR
     // find in workspace
     const wsFolder = projectRootDir;
     if (wsFolder) {
-        for (const path of ['.', '.eide', 'tools']) {
+        for (const path of ['.', '.zide', 'tools']) {
             const cfgFolder = File.fromArray([wsFolder.path, path]);
             if (cfgFolder.IsDir()) {
                 cfgFolder.GetList([/\.cfg$/i], File.EXCLUDE_ALL_FILTER).forEach((file) => {
@@ -769,7 +769,7 @@ export async function sendCommandToTerminal(title: string, commandLine: string, 
             }
             // init task
             const task = new vscode.Task({ type: 'shell', command: commandLine }, vscode.TaskScope.Global,
-                title, opts?.source || 'eide', new vscode.ShellExecution(commandLine, shellOption), []);
+                title, opts?.source || 'zide', new vscode.ShellExecution(commandLine, shellOption), []);
             task.isBackground = false;
             task.presentationOptions = {
                 echo: true,
@@ -1052,7 +1052,7 @@ export async function downloadFileWithProgress(url: string, fileLable: string,
 
 export async function readGithubRepoFolder(repo_url: string, token?: vscode.CancellationToken): Promise<GitFileInfo[] | Error> {
 
-    // URL: https://api.github.com/repos/github0null/eide-doc/contents/eide-template-list
+    // URL: https://api.github.com/repos/github0null/zide-doc/contents/zide-template-list
     const remoteUrl = redirectHost(repo_url).replace(/^http[s]?:\/\//, '');
     const netReq = new NetRequest();
 
@@ -1093,11 +1093,11 @@ export async function readGithubRepoFolder(repo_url: string, token?: vscode.Canc
 }
 
 /**
- * @param repo_path like: github0null/eide_default_external_tools_index
+ * @param repo_path like: github0null/zide_default_external_tools_index
  * @param file_path like: dir/index.json
 */
 export async function readGithubRepoTxtFile(repo_path: string, file_path: string): Promise<string | Error | undefined> {
-    // https://raw.githubusercontent.com/github0null/eide_default_external_tools_index/master/xxx
+    // https://raw.githubusercontent.com/github0null/zide_default_external_tools_index/master/xxx
     const url = redirectHost(`https://raw.githubusercontent.com/${repo_path}/master/${file_path}`);
     return await requestTxt(url);
 }

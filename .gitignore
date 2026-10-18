@@ -3,7 +3,7 @@
 /out.min
 vsc-extension-quickstart.md
 *.vsix
-.EIDE
+.ZIDE
 .vscodeignore
 ./lib
 /dist
@@ -18,7 +18,7 @@ test.js
 /src/Telemetry
 /src/Private
 
-# eide vars
+# zide vars
 /res/data/config.json
 /res/data/sln.record
 /res/data/data.yaml

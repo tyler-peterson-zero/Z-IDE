@@ -1,8 +1,8 @@
 import type { BuildReport } from './types/build-report';
 
 export const HostMsg = {
-  launched: 'eide.callgraph_view.launched',
-  init: 'eide.callgraph_view.init',
+  launched: 'zide.callgraph_view.launched',
+  init: 'zide.callgraph_view.init',
   gotoDefinition: 'callgraph.gotoDefinition',
 } as const;
 

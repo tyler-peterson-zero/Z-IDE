@@ -24,16 +24,16 @@
 
 import * as xml2js from 'x2js';
 import { File } from '../lib/node-utility/File';
-import { BuilderOptions, ProjectType, FileGroup, ProjectConfiguration } from './EIDETypeDefine';
+import { BuilderOptions, ProjectType, FileGroup, ProjectConfiguration } from './ZIDETypeDefine';
 import { ToolchainName, ToolchainManager } from './ToolchainManager';
-import { AbstractProject, VirtualSource } from './EIDEProject';
+import { AbstractProject, VirtualSource } from './ZIDEProject';
 import { GlobalEvent } from './GlobalEvents';
 import { ExceptionToMessage } from './Message';
 import { ResManager } from './ResManager';
 import * as NodePath from 'path';
 import { DependenceManager } from './DependenceManager';
 import { ArrayDelRepetition } from '../lib/node-utility/Utility';
-import { CurrentDevice, C51BaseCompileData, ArmBaseCompileData, ARMStorageLayout, ArmBaseCompileConfigModel } from './EIDEProjectModules';
+import { CurrentDevice, C51BaseCompileData, ArmBaseCompileData, ARMStorageLayout, ArmBaseCompileConfigModel } from './ZIDEProjectModules';
 import * as utility from './utility';
 
 export interface KeilRteDependence {
@@ -743,12 +743,12 @@ class ARMParser extends KeilParser<KeilARMOption> {
             // parse builder tasks
             {
                 const commonOption = targetOptionObj.TargetCommonOption;
-                const eideOption = option.optionsGroup[option.toolchain];
+                const zideOption = option.optionsGroup[option.toolchain];
 
-                if (eideOption.beforeBuildTasks == undefined)
-                    eideOption.beforeBuildTasks = [];
-                if (eideOption.afterBuildTasks == undefined)
-                    eideOption.afterBuildTasks = [];
+                if (zideOption.beforeBuildTasks == undefined)
+                    zideOption.beforeBuildTasks = [];
+                if (zideOption.afterBuildTasks == undefined)
+                    zideOption.afterBuildTasks = [];
 
                 // keil props
                 const mdk_OutputName: string      = commonOption.OutputName;
@@ -797,7 +797,7 @@ class ARMParser extends KeilParser<KeilARMOption> {
                     for (let idx = 1; idx < 3; idx++) {
                         let cmd = beforeMake[`UserProg${idx}Name`];
                         if (cmd) {
-                            eideOption.beforeBuildTasks.push({
+                            zideOption.beforeBuildTasks.push({
                                 "name": cmd,
                                 "command": `$<cd:mdk-proj-dir> && ${replaceMdkEnv(cmd)}`,
                                 "disable": beforeMake[`RunUserProg${idx}`] != '1',
@@ -818,7 +818,7 @@ class ARMParser extends KeilParser<KeilARMOption> {
                             total_cnt++;
                             const actived = afterMake[`RunUserProg${idx}`] == '1';
                             if (actived) actived_cnt++;
-                            eideOption.afterBuildTasks.push({
+                            zideOption.afterBuildTasks.push({
                                 "name": cmd,
                                 "command": `$<cd:mdk-proj-dir> && ${replaceMdkEnv(cmd)}`,
                                 "disable": !actived,
@@ -838,18 +838,18 @@ class ARMParser extends KeilParser<KeilARMOption> {
                             copyFilesCmd['command'] = copyFilesCmd['command']
                                 .replace('${KEIL_OUTPUT_NAME}', () => '${ProjectName}');
                         }
-                        eideOption.afterBuildTasks.splice(0, 0, copyFilesCmd);
+                        zideOption.afterBuildTasks.splice(0, 0, copyFilesCmd);
                     }
                     if (mdk_CreateLib) {
-                        // Make eide output lib instead of elf
-                        if (eideOption.linker == undefined) eideOption.linker = {};
-                        eideOption.linker['output-format'] = 'lib';
+                        // Make zide output lib instead of elf
+                        if (zideOption.linker == undefined) zideOption.linker = {};
+                        zideOption.linker['output-format'] = 'lib';
                     }
                     if (!mdk_CreateHexFile) {
-                        // Make eide Don't output s19/bin
-                        if (eideOption.linker == undefined) eideOption.linker = {};
-                        eideOption.linker['$disableOutputTask'] = false;
-                        eideOption.linker['$outputTaskExcludes'] = ['.bin', '.s19'];
+                        // Make zide Don't output s19/bin
+                        if (zideOption.linker == undefined) zideOption.linker = {};
+                        zideOption.linker['$disableOutputTask'] = false;
+                        zideOption.linker['$outputTaskExcludes'] = ['.bin', '.s19'];
                     }
                 }
             }
@@ -1177,7 +1177,7 @@ class ARMParser extends KeilParser<KeilARMOption> {
         const prjConfig = <ProjectConfiguration<ArmBaseCompileData>>prj.GetConfiguration();
         const config = prjConfig.config.toolchainConfig;
 
-        const eidePath = prj.getEideDir().path;
+        const zidePath = prj.getZideDir().path;
         const compileModel = <ArmBaseCompileConfigModel>prjConfig.toolchainConfigModel;
 
         try {

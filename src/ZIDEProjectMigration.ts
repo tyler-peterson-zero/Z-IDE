@@ -2,27 +2,27 @@ import * as NodePath from "path";
 import * as os from "os";
 import * as fs from "fs";
 import { File } from "../lib/node-utility/File";
-import { EIDE_CONF_VERSION, ProjectConfiguration } from "./EIDETypeDefine";
+import { ZIDE_CONF_VERSION, ProjectConfiguration } from "./ZIDETypeDefine";
 import { compareVersion } from "./utility";
 import { view_str$prompt$migrationFailed } from "./StringTable";
 import { GlobalEvent } from "./GlobalEvents";
 import { getGlobalState } from "./Platform";
 
 export function detectProject(dir: File): boolean {
-    if (File.IsExist(NodePath.join(dir.path, '.eide', 'eide.yml')))
+    if (File.IsExist(NodePath.join(dir.path, '.zide', 'zide.yml')))
         return true;
-    if (File.IsExist(NodePath.join(dir.path, '.eide', 'eide.json')))
+    if (File.IsExist(NodePath.join(dir.path, '.zide', 'zide.json')))
         return true;
     return false;
 }
 
 async function _doMigration(projectRootDir: File) {
 
-    // move eide.json to eide.yml
-    const eideJsonFile = File.from(projectRootDir.path, '.eide', 'eide.json');
-    const projCfgFile = File.from(projectRootDir.path, '.eide', 'eide.yml');
-    if (eideJsonFile.IsExist()) {
-        const obj = ProjectConfiguration.parseProjectFile(eideJsonFile.Read());
+    // move zide.json to zide.yml
+    const zideJsonFile = File.from(projectRootDir.path, '.zide', 'zide.json');
+    const projCfgFile = File.from(projectRootDir.path, '.zide', 'zide.yml');
+    if (zideJsonFile.IsExist()) {
+        const obj = ProjectConfiguration.parseProjectFile(zideJsonFile.Read());
         projCfgFile.Write(ProjectConfiguration.dumpProjectFile(obj));
     }
 
@@ -72,8 +72,8 @@ async function _doMigration(projectRootDir: File) {
         projCfgFile.Write(ProjectConfiguration.dumpProjectFile(prjCfg));
     }
 
-    // rm .eide.usr.ctx.json
-    const p = NodePath.join(projectRootDir.path, '.eide.usr.ctx.json');
+    // rm .zide.usr.ctx.json
+    const p = NodePath.join(projectRootDir.path, '.zide.usr.ctx.json');
     if (File.IsFile(p)) {
         try {
             if (prjCfg.miscInfo && prjCfg.miscInfo.uid) {

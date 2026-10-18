@@ -25,8 +25,8 @@
 import * as vscode from "vscode";
 import { File } from "../lib/node-utility/File";
 import { ResManager } from "./ResManager";
-import { AbstractProject, SymbolInfo } from "./EIDEProject";
-import { ArmBaseCompileConfigModel } from "./EIDEProjectModules";
+import { AbstractProject, SymbolInfo } from "./ZIDEProject";
+import { ArmBaseCompileConfigModel } from "./ZIDEProjectModules";
 import { GlobalEvent } from "./GlobalEvents";
 import { view_str$compile$options, view_str$compile$storageLayout, 
     view_str$env_desc$builer_folder, view_str$env_desc$compiler_folder, 
@@ -86,7 +86,7 @@ export class WebPanelManager {
             ViewCol = vscode.ViewColumn.One;
         }
 
-        const panel = vscode.window.createWebviewPanel('eide.simple-cfg-ui',
+        const panel = vscode.window.createWebviewPanel('zide.simple-cfg-ui',
             cfg.title, 
             { viewColumn: ViewCol, preserveFocus: cfg.notTakeFocus }, 
             { enableScripts: true, retainContextWhenHidden: true });
@@ -95,7 +95,7 @@ export class WebPanelManager {
             const uid = cfg.ref_id;
             this.simpleConfigViewRef.set(uid, panel);
             panel.onDidDispose(() => {
-                console.log(`[eide] onDidDispose simpleConfigView for ${uid}`);
+                console.log(`[zide] onDidDispose simpleConfigView for ${uid}`);
                 this.simpleConfigViewRef.delete(uid);
             });
         }
@@ -106,7 +106,7 @@ export class WebPanelManager {
             /* it's a message */
             if (typeof _data == 'string') {
                 switch (_data) {
-                    case 'eide.simple-cfg-ui.launched': /* webview launched */
+                    case 'zide.simple-cfg-ui.launched': /* webview launched */
                         panel.webview.postMessage(cfg);
                         break;
                     default:
@@ -120,10 +120,10 @@ export class WebPanelManager {
                 try {
                     const ret = await onSubmit(_data, panel);
                     if (ret != 'canceled')
-                        panel.webview.postMessage('eide.simple-cfg-ui.status.done');
+                        panel.webview.postMessage('zide.simple-cfg-ui.status.done');
                 } catch (error) {
                     GlobalEvent.emit('error', error);
-                    panel.webview.postMessage('eide.simple-cfg-ui.status.fail');
+                    panel.webview.postMessage('zide.simple-cfg-ui.status.fail');
                 }
             }
         });
@@ -162,7 +162,7 @@ export class WebPanelManager {
         panel.iconPath = vscode.Uri.parse(resManager.GetIconByName('Memory_16x.svg').ToUri());
 
         panel.onDidDispose(() => {
-            console.log(`[eide] onDidDispose memoryLayoutView for ${project.getRootDir().path}`);
+            console.log(`[zide] onDidDispose memoryLayoutView for ${project.getRootDir().path}`);
             this.memoryLayoutViewRef.delete(project.getUid());
         });
 
@@ -172,7 +172,7 @@ export class WebPanelManager {
             /* it's a message */
             if (typeof _data == 'string') {
                 switch (_data) {
-                    case 'eide.mem-layout.launched': /* webview launched */
+                    case 'zide.mem-layout.launched': /* webview launched */
                         {
                             panel.webview.postMessage({
                                 DEF: project.GetPackManager().getCurrentDevInfo()?.storageLayout,
@@ -189,10 +189,10 @@ export class WebPanelManager {
             else {
                 try {
                     compileModel.updateStorageLayout(_data);
-                    panel.webview.postMessage('eide.mem-layout.status.done');
+                    panel.webview.postMessage('zide.mem-layout.status.done');
                 } catch (error) {
                     GlobalEvent.emit('error', error);
-                    panel.webview.postMessage('eide.mem-layout.status.fail');
+                    panel.webview.postMessage('zide.mem-layout.status.fail');
                 }
             }
         });
@@ -253,11 +253,11 @@ export class WebPanelManager {
                 desc: `${prjEnv[key]}`
             })
         }
-        // other EIDE_xx variables
+        // other ZIDE_xx variables
         [
-            { name: '${EIDE_CUR_COMPILER_CC_BASE_ARGS}', desc: view_str$env_desc$cc_base_args },
-            { name: '${EIDE_CUR_COMPILER_CXX_BASE_ARGS}', desc: view_str$env_desc$cxx_base_args },
-            { name: '${EIDE_CUR_COMPILER_AS_BASE_ARGS}', desc: view_str$env_desc$asm_base_args }
+            { name: '${ZIDE_CUR_COMPILER_CC_BASE_ARGS}', desc: view_str$env_desc$cc_base_args },
+            { name: '${ZIDE_CUR_COMPILER_CXX_BASE_ARGS}', desc: view_str$env_desc$cxx_base_args },
+            { name: '${ZIDE_CUR_COMPILER_AS_BASE_ARGS}', desc: view_str$env_desc$asm_base_args }
         ].forEach(item => envList.push(item))
 
         const toolchain = project.getToolchain();
@@ -283,7 +283,7 @@ export class WebPanelManager {
         }
 
         panel.onDidDispose(() => {
-            console.log(`[eide] onDidDispose builderOptionView for ${project.getRootDir().path}`);
+            console.log(`[zide] onDidDispose builderOptionView for ${project.getRootDir().path}`);
             this.builderOptionViewRef.delete(project.getUid());
         });
 
@@ -293,7 +293,7 @@ export class WebPanelManager {
             if (typeof data === 'string') {
                 switch (data) {
                     /* post page-init event */
-                    case 'eide.options_view.launched':
+                    case 'zide.options_view.launched':
                         panel.webview.postMessage(initMsg);
                         break;
                     default:
@@ -397,7 +397,7 @@ export class WebPanelManager {
         };
 
         panel.onDidDispose(() => {
-            console.log(`[eide] onDidDispose CmsisConfigWizard for ${uri.fsPath}`);
+            console.log(`[zide] onDidDispose CmsisConfigWizard for ${uri.fsPath}`);
             this.cmsisHeaderViewRef.delete(uri.fsPath);
         });
 
@@ -411,7 +411,7 @@ export class WebPanelManager {
                         vscode.window.showTextDocument(uri, { preview: true });
                         break;
                     /* post page-init event */
-                    case 'eide.cmsis_config_wizard.launched':
+                    case 'zide.cmsis_config_wizard.launched':
                         panel.webview.postMessage(initMsg);
                         break;
                     default:
@@ -585,8 +585,8 @@ export class WebPanelManager {
                 if (File.IsFile(fspath))
                     gotoDefinition(fspath, inf.line ?? 0, inf.column ?? 0);
             }
-            else if (msg.id === 'eide.callgraph_view.launched') {
-                webviewPanel.webview.postMessage({ id: 'eide.callgraph_view.init', data: dataJson });
+            else if (msg.id === 'zide.callgraph_view.launched') {
+                webviewPanel.webview.postMessage({ id: 'zide.callgraph_view.init', data: dataJson });
             }
         });
 

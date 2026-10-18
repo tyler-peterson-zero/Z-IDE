@@ -11,12 +11,12 @@ function injectBuildReportPlaceholder(): Plugin {
     transformIndexHtml: {
       order: 'post',
       handler(html) {
-        if (html.includes('EIDE_CALLGRAPH_INIT')) {
+        if (html.includes('ZIDE_CALLGRAPH_INIT')) {
           return html;
         }
         return html.replace(
           '</head>',
-          '  <!-- EIDE_CALLGRAPH_INIT:$BUILD_REPORT -->\n</head>',
+          '  <!-- ZIDE_CALLGRAPH_INIT:$BUILD_REPORT -->\n</head>',
         );
       },
     },

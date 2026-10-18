@@ -22,7 +22,7 @@
     SOFTWARE.
 */
 
-import { BuilderOptions, ProjectType, CppConfigItem, BuilderConfigData } from "./EIDETypeDefine";
+import { BuilderOptions, ProjectType, CppConfigItem, BuilderConfigData } from "./ZIDETypeDefine";
 import { File } from "../lib/node-utility/File";
 import { SettingManager } from "./SettingManager";
 import { ResManager } from "./ResManager";
@@ -34,7 +34,7 @@ import * as child_process from 'child_process';
 import * as fs from 'fs';
 import * as events from 'events';
 import * as NodePath from 'path';
-import { ArmBaseBuilderConfigData } from "./EIDEProjectModules";
+import { ArmBaseBuilderConfigData } from "./ZIDEProjectModules";
 import * as utility from "./utility";
 import * as ArmCpuUtils from "./ArmCpuUtils";
 import * as os from "os";
@@ -77,8 +77,8 @@ export interface IToolchian {
     readonly modelName: string;
 
     /**
-     * 这个字段在 eide.json v3.5 及之后的版本，已不再使用。新建的工具链请设置为字符串 'null' 值
-     * @deprecated 这个字段在 eide.json v3.5 及之后的版本，已不再使用
+     * 这个字段在 zide.json v3.5 及之后的版本，已不再使用。新建的工具链请设置为字符串 'null' 值
+     * @deprecated 这个字段在 zide.json v3.5 及之后的版本，已不再使用
     */
     readonly configName: string;
 
@@ -381,7 +381,7 @@ export class ToolchainManager {
                     }
 
                     // for gcc, '--specs=xxx' should be global options
-                    // ref: https://github.com/github0null/eide/issues/259
+                    // ref: https://github.com/github0null/zide/issues/259
                     if (utility.isGccFamilyToolchain(toolchain.name) && curOption.linker && typeof curOption.linker['LD_FLAGS'] == 'string') {
                         const specsOpts = curOption.linker['LD_FLAGS'].match(/--specs=[^\s]+/g);
                         if (specsOpts && specsOpts.length > 0) {
@@ -485,7 +485,7 @@ class KeilC51 implements IToolchian {
 
     readonly version = 2;
 
-    readonly settingName: string = 'EIDE.C51.INI.Path';
+    readonly settingName: string = 'ZIDE.C51.INI.Path';
 
     readonly verifyFileName: string = '8051.keil.verify.json';
 
@@ -737,7 +737,7 @@ class SDCC implements IToolchian {
 
     readonly version = 3;
 
-    readonly settingName: string = 'EIDE.SDCC.InstallDirectory';
+    readonly settingName: string = 'ZIDE.SDCC.InstallDirectory';
 
     readonly categoryName: string = 'SDCC';
 
@@ -1172,7 +1172,7 @@ class GNU_SDCC_MCS51 implements IToolchian {
 
     readonly version = 1;
 
-    readonly settingName: string = 'EIDE.SDCC.GNU_MCS51.InstallDirectory';
+    readonly settingName: string = 'ZIDE.SDCC.GNU_MCS51.InstallDirectory';
 
     readonly categoryName: string = 'SDCC';
 
@@ -1330,7 +1330,7 @@ class COSMIC_STM8 implements IToolchian {
 
     readonly version = 1;
 
-    readonly settingName: string = 'EIDE.STM8.COSMIC.InstallDirectory';
+    readonly settingName: string = 'ZIDE.STM8.COSMIC.InstallDirectory';
 
     readonly categoryName: string = 'COSMIC';
 
@@ -1744,7 +1744,7 @@ class AC5 implements IToolchian {
 
     readonly version = 4;
 
-    readonly settingName: string = 'EIDE.ARM.ARMCC5.InstallDirectory';
+    readonly settingName: string = 'ZIDE.ARM.ARMCC5.InstallDirectory';
 
     readonly categoryName: string = 'ARMCC';
 
@@ -1938,7 +1938,7 @@ class AC6 implements IToolchian {
 
     readonly version = 3;
 
-    readonly settingName: string = 'EIDE.ARM.ARMCC6.InstallDirectory';
+    readonly settingName: string = 'ZIDE.ARM.ARMCC6.InstallDirectory';
 
     readonly categoryName: string = 'ARMCC';
 
@@ -2189,7 +2189,7 @@ class GCC implements IToolchian {
 
     readonly version = 5;
 
-    readonly settingName: string = 'EIDE.ARM.GCC.InstallDirectory';
+    readonly settingName: string = 'ZIDE.ARM.GCC.InstallDirectory';
 
     readonly categoryName: string = 'GCC';
 
@@ -2469,7 +2469,7 @@ class IARARM implements IToolchian {
 
     readonly configName: string = 'options.arm.iar.json';
 
-    readonly settingName: string = 'EIDE.IAR.ARM.Toolchain.InstallDirectory';
+    readonly settingName: string = 'ZIDE.IAR.ARM.Toolchain.InstallDirectory';
 
     readonly verifyFileName: string = 'arm.iar.verify.json';
 
@@ -2712,7 +2712,7 @@ class LLVM_ARM implements IToolchian {
 
     readonly version = 1;
 
-    readonly settingName: string = 'EIDE.ARM.LLVM.InstallDirectory';
+    readonly settingName: string = 'ZIDE.ARM.LLVM.InstallDirectory';
 
     readonly categoryName: string = 'GCC';
 
@@ -2865,7 +2865,7 @@ class LLVM_ARM implements IToolchian {
  8000188  8000188        0     1         . = ALIGN(4)
  8000190  8000190     c16c    16 .text
  8000190  8000190        0     1         . = ALIGN(4)
- 8000190  8000190       14     4         C:\Users\Administrator\.eide\tools\llvm_arm\bin\..\lib\clang-runtimes/arm-none-eabi/armv7m_hard_fpv4_sp_d16_exn_rtti_unaligned\lib\libclang_rt.builtins.a(aeabi_uldivmod.S.obj):(.text)
+ 8000190  8000190       14     4         C:\Users\Administrator\.zide\tools\llvm_arm\bin\..\lib\clang-runtimes/arm-none-eabi/armv7m_hard_fpv4_sp_d16_exn_rtti_unaligned\lib\libclang_rt.builtins.a(aeabi_uldivmod.S.obj):(.text)
  8000190  8000190        0     1                 $t
  8000191  8000191       14     1                 __aeabi_uldivmod
  80001a4  80001a4       2c     2         ./out/LLVM/.obj/Core/Src/logger.o:(.text._log)
@@ -3248,7 +3248,7 @@ class IARSTM8 implements IToolchian {
 
     readonly configName: string = 'options.stm8.iar.json';
 
-    readonly settingName: string = 'EIDE.IAR.STM8.InstallDirectory';
+    readonly settingName: string = 'ZIDE.IAR.STM8.InstallDirectory';
 
     readonly verifyFileName: string = 'stm8.iar.verify.json';
 
@@ -3394,7 +3394,7 @@ class MTI_GCC implements IToolchian {
 
     readonly version = 1;
 
-    readonly settingName: string = 'EIDE.MIPS.InstallDirectory';
+    readonly settingName: string = 'ZIDE.MIPS.InstallDirectory';
 
     readonly categoryName: string = 'GCC';
 
@@ -3628,7 +3628,7 @@ class RISCV_GCC implements IToolchian {
 
     readonly version = 2;
 
-    readonly settingName: string = 'EIDE.RISCV.InstallDirectory';
+    readonly settingName: string = 'ZIDE.RISCV.InstallDirectory';
 
     readonly categoryName: string = 'GCC';
 
@@ -3922,7 +3922,7 @@ class AnyGcc implements IToolchian {
 
     readonly version = 2;
 
-    readonly settingName: string = 'EIDE.Toolchain.AnyGcc.InstallDirectory';
+    readonly settingName: string = 'ZIDE.Toolchain.AnyGcc.InstallDirectory';
 
     readonly categoryName: string = 'GCC';
 

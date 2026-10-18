@@ -43,16 +43,16 @@ import { GlobalEvent } from "./GlobalEvents";
 import { ExceptionToMessage, newMessage } from "./Message";
 import { ToolchainName } from './ToolchainManager';
 import { HexUploaderType } from "./HexUploader";
-import { VirtualSource } from "./EIDEProject";
+import { VirtualSource } from "./ZIDEProject";
 import * as utility from './utility';
-import { CompileConfigModel, UploadConfigModel, SdccCompileConfigModel, GccCompileConfigModel, RiscvCompileConfigModel, AnyGccCompileConfigModel, MipsCompileConfigModel } from './EIDEProjectModules';
+import { CompileConfigModel, UploadConfigModel, SdccCompileConfigModel, GccCompileConfigModel, RiscvCompileConfigModel, AnyGccCompileConfigModel, MipsCompileConfigModel } from './ZIDEProjectModules';
 
 // ----------------------------------------------------------
 // - project struct define
 // ----------------------------------------------------------
 
-// !! eide project config file version !!
-export const EIDE_CONF_VERSION = '4.1';
+// !! zide project config file version !!
+export const ZIDE_CONF_VERSION = '4.1';
 
 //
 //  'C51': 8BIT MCU Project (like: mcs51, stm8, ...)
@@ -106,8 +106,8 @@ export interface BuilderOptions {
     linker?: any;
 }
 
-// 备注：由于历史原因，插件运行时会将 eide.json 直接转成json对象作为 项目的数据结构 使用；
-// 但插件运行时的数据结构和eide.json文件的内容是不一样的，有一些键仅在插件内部使用；
+// 备注：由于历史原因，插件运行时会将 zide.json 直接转成json对象作为 项目的数据结构 使用；
+// 但插件运行时的数据结构和zide.json文件的内容是不一样的，有一些键仅在插件内部使用；
 // 需要保证一些键位于json对象的根下，因此需要将这些键从 targets 复制到上一层，
 // 对比 ProjectTargetInfo 与 ProjectConfigData 相同的键，这些键如下：
 export const MAPPED_KEYS_IN_TARGET_INFO = [
@@ -150,10 +150,10 @@ export interface VirtualFolder {
 
 export interface BuilderConfigData { }
 
-// 备注：由于历史原因，插件运行时会将 eide.json 直接转成json对象作为 项目的数据结构 使用；
-// 但插件运行时的数据结构和eide.json文件的内容是不一样的，有一些键仅在插件内部使用；
-// 是不需要保存到 eide.json 文件中去，因此在保存项目数据结构时，需要排除这些键，如下：
-const EXCL_KEYS_IN_EIDE_JSON = [
+// 备注：由于历史原因，插件运行时会将 zide.json 直接转成json对象作为 项目的数据结构 使用；
+// 但插件运行时的数据结构和zide.json文件的内容是不一样的，有一些键仅在插件内部使用；
+// 是不需要保存到 zide.json 文件中去，因此在保存项目数据结构时，需要排除这些键，如下：
+const EXCL_KEYS_IN_ZIDE_JSON = [
     'mode',
     'excludeList',
     'toolchain',
@@ -480,9 +480,9 @@ export class ProjectConfiguration<T extends BuilderConfigData>
     protected rootDir: File;
     protected workspaceState: vscode.Memento;
 
-    constructor(eideJsonFile: File, workspaceState: vscode.Memento, type?: ProjectType) {
+    constructor(zideJsonFile: File, workspaceState: vscode.Memento, type?: ProjectType) {
 
-        super(eideJsonFile, type);
+        super(zideJsonFile, type);
 
         this.workspaceState = workspaceState;
 
@@ -636,7 +636,7 @@ export class ProjectConfiguration<T extends BuilderConfigData>
         switch (type) {
             case 'C51':
                 return {
-                    version: EIDE_CONF_VERSION,
+                    version: ZIDE_CONF_VERSION,
                     name: 'undefined',
                     type: type,
                     mode: 'Debug',
@@ -658,7 +658,7 @@ export class ProjectConfiguration<T extends BuilderConfigData>
                 };
             case 'ARM':
                 return {
-                    version: EIDE_CONF_VERSION,
+                    version: ZIDE_CONF_VERSION,
                     name: 'undefined',
                     type: type,
                     mode: 'Debug',
@@ -680,7 +680,7 @@ export class ProjectConfiguration<T extends BuilderConfigData>
                 };
             case 'RISC-V':
                 return {
-                    version: EIDE_CONF_VERSION,
+                    version: ZIDE_CONF_VERSION,
                     name: 'undefined',
                     type: type,
                     mode: 'Debug',
@@ -702,7 +702,7 @@ export class ProjectConfiguration<T extends BuilderConfigData>
                 };
             case 'MIPS':
                 return {
-                    version: EIDE_CONF_VERSION,
+                    version: ZIDE_CONF_VERSION,
                     name: 'undefined',
                     type: type,
                     mode: 'Debug',
@@ -724,7 +724,7 @@ export class ProjectConfiguration<T extends BuilderConfigData>
                 };
             case 'ANY-GCC':
                 return {
-                    version: EIDE_CONF_VERSION,
+                    version: ZIDE_CONF_VERSION,
                     name: 'undefined',
                     type: type,
                     mode: 'Debug',
@@ -1417,7 +1417,7 @@ export class ProjectConfiguration<T extends BuilderConfigData>
         const target = this.config.targets[targetName];
 
         if (!target)
-            throw new Error(`not found target: '${targetName}' in 'eide.yml' !`);
+            throw new Error(`not found target: '${targetName}' in 'zide.yml' !`);
 
         this.config.mode = targetName;
         this.config.excludeList = Array.from(target.excludeList);
@@ -1478,12 +1478,12 @@ export class ProjectConfiguration<T extends BuilderConfigData>
 
     protected toString(): string {
 
-        const eidePrjObj = <ProjectConfigData<T>>utility.deepCloneObject(this.config);
+        const zidePrjObj = <ProjectConfigData<T>>utility.deepCloneObject(this.config);
 
         // store target 
-        eidePrjObj.targets[eidePrjObj.mode] = this.cloneCurrentTarget();
-        for (const key in eidePrjObj.targets) {
-            const target = eidePrjObj.targets[key];
+        zidePrjObj.targets[zidePrjObj.mode] = this.cloneCurrentTarget();
+        for (const key in zidePrjObj.targets) {
+            const target = zidePrjObj.targets[key];
             target.toolchainConfigMap[target.toolchain] = target.toolchainConfig;
             target.toolchainConfig = undefined;
             target.uploadConfigMap[target.uploader] = target.uploadConfig;
@@ -1497,27 +1497,27 @@ export class ProjectConfiguration<T extends BuilderConfigData>
         }
 
         // convert abspath to relative path before save to file
-        eidePrjObj.srcDirs = eidePrjObj.srcDirs.map((path) => this.toRelativePath(path));
+        zidePrjObj.srcDirs = zidePrjObj.srcDirs.map((path) => this.toRelativePath(path));
 
         // ignore some 'dynamic' dependence
-        eidePrjObj.dependenceList = eidePrjObj.dependenceList.filter((g) => {
+        zidePrjObj.dependenceList = zidePrjObj.dependenceList.filter((g) => {
             return g.groupName !== ProjectConfiguration.BUILD_IN_GROUP_NAME
                 && g.groupName !== ProjectConfiguration.CUSTOM_GROUP_NAME;
         });
 
-        for (const depGroup of eidePrjObj.dependenceList) {
+        for (const depGroup of zidePrjObj.dependenceList) {
             for (const dep of depGroup.depList) {
                 dep.incList = dep.incList.map((path) => this.toRelativePath(path));
                 dep.libList = dep.libList.map((path) => this.toRelativePath(path));
             }
         }
 
-        for (const key in eidePrjObj) {
-            if (EXCL_KEYS_IN_EIDE_JSON.includes(key))
-                (<any>eidePrjObj)[key] = undefined;
+        for (const key in zidePrjObj) {
+            if (EXCL_KEYS_IN_ZIDE_JSON.includes(key))
+                (<any>zidePrjObj)[key] = undefined;
         }
 
-        return ProjectConfiguration.dumpProjectFile(eidePrjObj);
+        return ProjectConfiguration.dumpProjectFile(zidePrjObj);
     }
 
     // ! 注意这里比较两个 json 字符串是否相等，需要去除空白字符，不要直接比较字符串，
@@ -1539,7 +1539,7 @@ export class ProjectConfiguration<T extends BuilderConfigData>
         let curCfg = <any>this.config;
         for (const key in defCfg) {
             if (curCfg[key] == undefined &&
-                EXCL_KEYS_IN_EIDE_JSON.includes(key) == false) {
+                EXCL_KEYS_IN_ZIDE_JSON.includes(key) == false) {
                 curCfg[key] = defCfg[key];
             }
         }

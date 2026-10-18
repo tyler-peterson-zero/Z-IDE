@@ -35,7 +35,7 @@ let langIndex: number = /zh-cn/i.test(vscode.env.language)
     : LanguageIndexs.English;
 
 try {
-    const langType = vscode.workspace.getConfiguration('EIDE').get<string>('DisplayLanguage');
+    const langType = vscode.workspace.getConfiguration('ZIDE').get<string>('DisplayLanguage');
     switch (langType) {
         case 'zh-cn':
             langIndex = LanguageIndexs.Chinese;
@@ -267,7 +267,7 @@ export const view_str$project$folder_type_fs = [
 
 export const view_str$project$folder_type_fs_desc = [
     '从磁盘中选择一个文件夹，将其直接链接到项目中，自动添加其中的源文件以及包含路径',
-    'Select folder from disk, eide will link it directly into your project.'
+    'Select folder from disk, zide will link it directly into your project.'
 ][langIndex];
 
 export const view_str$project$folder_type_virtual = [
@@ -559,8 +559,8 @@ export const view_str$prompt$userCanceledOperation = [
 ][langIndex];
 
 export const view_str$prompt$chipPkgNotCompateThisVersion = [
-    `不兼容的项目，'芯片支持包' 功能在 v3.18.0 版本的 eide 中发生了变化（[更新日志](https://marketplace.visualstudio.com/items/CL.eide/changelog)），点击 '继续' 将强制打开项目并移除不兼容的数据，点击 '取消' 则退出。`,
-    `Incompatible project, the 'Chip Support Package' function has changed in the version v3.18.0 of eide ([ChangeLog](https://marketplace.visualstudio.com/items/CL.eide/changelog)), clicking 'Continue' will force the project to open, and clicking 'Cancel' will cancel the opening.`
+    `不兼容的项目，'芯片支持包' 功能在 v3.18.0 版本的 zide 中发生了变化（[更新日志](https://marketplace.visualstudio.com/items/CL.zide/changelog)），点击 '继续' 将强制打开项目并移除不兼容的数据，点击 '取消' 则退出。`,
+    `Incompatible project, the 'Chip Support Package' function has changed in the version v3.18.0 of zide ([ChangeLog](https://marketplace.visualstudio.com/items/CL.zide/changelog)), clicking 'Continue' will force the project to open, and clicking 'Cancel' will cancel the opening.`
 ][langIndex];
 
 export const view_str$prompt$removeSrcDir = [
@@ -599,8 +599,8 @@ export const view_str$prompt$requestAndActivateLicence_warn_setupPath = [
 ][langIndex];
 
 export const view_str$prompt$need_reload_project = [
-    `{} 的项目文件 eide.yml 已被更改，重新加载项目？`,
-    `The project file "eide.yml" of "{}" has been changed !, reload it ?`
+    `{} 的项目文件 zide.yml 已被更改，重新加载项目？`,
+    `The project file "zide.yml" of "{}" has been changed !, reload it ?`
 ][langIndex];
 
 export const view_str$prompt$src_folder_must_be_a_child_of_root = [
@@ -619,8 +619,8 @@ export const view_str$prompt$unresolved_deps = [
 ][langIndex];
 
 export const view_str$prompt$eclipse_imp_warning = [
-    `在 eclipse 和 eide 之间有一些不兼容的参数，您需要检查并手动添加到 eide 项目 !\n\n当你解决了这些不兼容的参数，你需要删除这个提示文件，否则这个文件还会再次显示 !`,
-    `There are some incompatible arguments between 'eclipse' and 'eide', you need check and add them to eide project manually !\n\nWhen you have solved these incompatible problems, you need delete this note file, otherwise this file will be show again !`
+    `在 eclipse 和 zide 之间有一些不兼容的参数，您需要检查并手动添加到 zide 项目 !\n\n当你解决了这些不兼容的参数，你需要删除这个提示文件，否则这个文件还会再次显示 !`,
+    `There are some incompatible arguments between 'eclipse' and 'zide', you need check and add them to zide project manually !\n\nWhen you have solved these incompatible problems, you need delete this note file, otherwise this file will be show again !`
 ][langIndex];
 
 export const view_str$prompt$tool_install_mode_online = [
@@ -779,8 +779,8 @@ export const view_str$msg$err_ewt_hash = [
 ][langIndex];
 
 export const view_str$prompt$project_is_opened_by_another = [
-    `无法锁定项目 '{path}'，这个项目可能已被其他 EIDE 实例打开了 ！`,
-    `Can't lock project: '{path}', maybe this project has been opened by another EIDE instance !`
+    `无法锁定项目 '{path}'，这个项目可能已被其他 ZIDE 实例打开了 ！`,
+    `Can't lock project: '{path}', maybe this project has been opened by another ZIDE instance !`
 ][langIndex];
 
 export const view_str$prompt$feedback = [
@@ -873,8 +873,8 @@ export const view_str$operation$create_prj_done = [
 ][langIndex];
 
 export const view_str$operation$import_sel_out_folder = [
-    '是否与原有的 KEIL 项目共存于同一目录下，如果选择 "No"，你需要为 EIDE 项目指定存放位置 ！',
-    'Make eide project coexist with the Keil project in the same directory ? If you choose "No", you need to specify a folder to store the eide project !'
+    '是否与原有的 KEIL 项目共存于同一目录下，如果选择 "No"，你需要为 ZIDE 项目指定存放位置 ！',
+    'Make zide project coexist with the Keil project in the same directory ? If you choose "No", you need to specify a folder to store the zide project !'
 ][langIndex];
 
 export const view_str$operation$create_empty_project = [
@@ -994,8 +994,8 @@ export const create_from_template_ok_desp = [
 ][langIndex];
 
 export const select_a_template_file = [
-    '选择此 EIDE 模板文件',
-    'select this EIDE template file'
+    '选择此 ZIDE 模板文件',
+    'select this ZIDE template file'
 ][langIndex];
 
 export const view_str$operation$setToolchainPath = [
@@ -1058,8 +1058,8 @@ export const view_str$operation$name_can_not_have_invalid_char = [
 ][langIndex];
 
 export const import_project_hit = [
-    '导入其他 IDE 的项目, 并完成 EIDE 项目的创建',
-    'Import project from other IDE and complete the creation of EIDE project'
+    '导入其他 IDE 的项目, 并完成 ZIDE 项目的创建',
+    'Import project from other IDE and complete the creation of ZIDE project'
 ][langIndex];
 
 export const create_project = [
@@ -1073,8 +1073,8 @@ export const view_str$import_project = [
 ][langIndex];
 
 export const create_project_hit = [
-    '新建一个 EIDE 项目',
-    'Create New EIDE Project'
+    '新建一个 ZIDE 项目',
+    'Create New ZIDE Project'
 ][langIndex];
 
 export const open_project = [
@@ -1083,8 +1083,8 @@ export const open_project = [
 ][langIndex];
 
 export const open_project_hit = [
-    '打开 EIDE 项目',
-    'Open EIDE Project'
+    '打开 ZIDE 项目',
+    'Open ZIDE Project'
 ][langIndex];
 
 export const close_project = [

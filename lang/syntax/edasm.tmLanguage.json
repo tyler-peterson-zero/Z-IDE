@@ -1,6 +1,6 @@
 {
     "information_for_contributors": [
-        "eide gcc disassembly support"
+        "zide gcc disassembly support"
     ],
     "version": "1.0.0",
     "name": "edasm",

@@ -2,8 +2,8 @@ import * as fs from 'fs';
 import * as NodePath from 'path';
 import * as os from 'os';
 import * as xml2js from 'xml2js';
-import { VirtualFolder } from './EIDETypeDefine';
-import { VirtualSource, AbstractProject } from './EIDEProject';
+import { VirtualFolder } from './ZIDETypeDefine';
+import { VirtualSource, AbstractProject } from './ZIDEProject';
 import { ArrayDelRepetition } from '../lib/node-utility/Utility';
 import { File } from '../lib/node-utility/File';
 import { GlobalEvent } from './GlobalEvents';
@@ -721,7 +721,7 @@ function parseToolOption(optionObj: any, prjtype: EclipseProjectType): { type: s
     }
 
     // ----
-    // STM32CubeIDE
+    // STM32Cubzide
     // ----
 
     // value="STM32F407VGTx" valueType="string"

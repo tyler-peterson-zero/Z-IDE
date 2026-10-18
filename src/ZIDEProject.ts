@@ -46,8 +46,8 @@ import {
     ConfigMap, FileGroup,
     ProjectConfiguration, ProjectConfigData, WorkspaceConfiguration,
     CreateOptions,
-    ProjectConfigEvent, ProjectFileGroup, FileItem, EIDE_CONF_VERSION, ProjectTargetInfo, VirtualFolder, VirtualFile, CppConfigItem, ProjectBaseApi, ProjectType, BuilderConfigData, MAPPED_KEYS_IN_TARGET_INFO
-} from './EIDETypeDefine';
+    ProjectConfigEvent, ProjectFileGroup, FileItem, ZIDE_CONF_VERSION, ProjectTargetInfo, VirtualFolder, VirtualFile, CppConfigItem, ProjectBaseApi, ProjectType, BuilderConfigData, MAPPED_KEYS_IN_TARGET_INFO
+} from './ZIDETypeDefine';
 import { ToolchainName, IToolchian, ToolchainManager } from './ToolchainManager';
 import { GlobalEvent } from './GlobalEvents';
 import { ArrayDelRepetition } from '../lib/node-utility/Utility';
@@ -82,7 +82,7 @@ import { ExeCmd, ExeFile } from '../lib/node-utility/Executable';
 import { jsonc } from 'jsonc';
 import * as iconv from 'iconv-lite';
 import * as globmatch from 'micromatch'
-import { EventData, CurrentDevice, ArmBaseCompileConfigModel, ArmBaseCompileData } from './EIDEProjectModules';
+import { EventData, CurrentDevice, ArmBaseCompileConfigModel, ArmBaseCompileData } from './ZIDEProjectModules';
 import * as FileLock from '../lib/node-utility/FileLock';
 import { CompilerCommandsDatabaseItem, CodeBuilder } from './CodeBuilder';
 import { xpackRequireDevTools } from './XpackDevTools';
@@ -683,7 +683,7 @@ class SourceRootList implements SourceProvider {
 
     private updateFolder(rootFolderInfo: SourceRootInfo, targetFolderList?: string[]) {
 
-        console.log(`[cl.eide] update source folder: '${rootFolderInfo.fileWatcher.file.path}' (${targetFolderList?.join(',')})`);
+        console.log(`[cl.zide] update source folder: '${rootFolderInfo.fileWatcher.file.path}' (${targetFolderList?.join(',')})`);
 
         const rootFolder = rootFolderInfo.fileWatcher.file;
         const folderStack: File[] = [];
@@ -822,16 +822,16 @@ export interface SymbolInfo {
 }
 
 export type DataChangeType = 'pack' | 'dependence' | 'compiler' | 'uploader' | 'files';
-export const EIDE_FILE_OPTION_VERSION = '2.1'
+export const ZIDE_FILE_OPTION_VERSION = '2.1'
 
 export abstract class AbstractProject implements CustomConfigurationProvider, ProjectBaseApi {
 
     static readonly workspaceSuffix = '.code-workspace';
     static readonly vsCodeDir = '.vscode';
-    static readonly EIDE_DIR = '.eide';
+    static readonly ZIDE_DIR = '.zide';
 
     static readonly cppConfigName = 'c_cpp_properties.json';
-    static readonly prjConfigName = 'eide.yml';
+    static readonly prjConfigName = 'zide.yml';
 
     static readonly importerWarningBaseName = 'importer.warning.txt';
 
@@ -857,10 +857,10 @@ export abstract class AbstractProject implements CustomConfigurationProvider, Pr
     protected packManager: PackageManager;
     protected dependenceManager: DependenceManager;
     protected rootDir: File | undefined;
-    protected eideDir: File | undefined;
+    protected zideDir: File | undefined;
     protected toolchain: IToolchian | undefined;
     protected prevToolchain: IToolchian | undefined;
-    protected eideDirWatcher: FileWatcher | undefined;
+    protected zideDirWatcher: FileWatcher | undefined;
     protected workspaceState: vscode.Memento;
 
     // sources
@@ -875,8 +875,8 @@ export abstract class AbstractProject implements CustomConfigurationProvider, Pr
     //- cpptools provider interface
     //-----------------------------------------------------------
 
-    name: string = 'eide';
-    extensionId: string = 'cl.eide';
+    name: string = 'zide';
+    extensionId: string = 'cl.zide';
     abstract canProvideConfiguration(uri: vscode.Uri, token?: vscode.CancellationToken | undefined): Thenable<boolean>;
     abstract provideConfigurations(uris: vscode.Uri[], token?: vscode.CancellationToken | undefined): Thenable<SourceFileConfigurationItem[]>;
     abstract canProvideBrowseConfiguration(token?: vscode.CancellationToken | undefined): Thenable<boolean>;
@@ -920,7 +920,7 @@ export abstract class AbstractProject implements CustomConfigurationProvider, Pr
 
     public getUid(): string {
         const miscInfo = this.GetConfiguration().config.miscInfo;
-        if (miscInfo.uid == undefined) miscInfo.uid = md5(`${this.getEideDir().path}-${Date.now()}`);
+        if (miscInfo.uid == undefined) miscInfo.uid = md5(`${this.getZideDir().path}-${Date.now()}`);
         return miscInfo.uid;
     }
 
@@ -992,10 +992,10 @@ export abstract class AbstractProject implements CustomConfigurationProvider, Pr
     }
 
     public getProjectFile(): File {
-        return File.from(this.getEideDir().path, AbstractProject.prjConfigName);
+        return File.from(this.getZideDir().path, AbstractProject.prjConfigName);
     }
 
-    public getEideProjectFile(): File {
+    public getZideProjectFile(): File {
         return this.getProjectFile();
     }
 
@@ -1133,19 +1133,19 @@ export abstract class AbstractProject implements CustomConfigurationProvider, Pr
 
     private loadProjectDirectory() {
 
-        // init watcher for '.eide' folder
-        this.eideDirWatcher = new FileWatcher(this.getEideDir(), false, false);
-        this.eideDirWatcher.on('error', err => GlobalEvent.log_error(err));
-        this.eideDirWatcher.OnChanged = f => this.onEideDirChanged('changed', f);
-        this.eideDirWatcher.OnRename = f => this.onEideDirChanged('renamed', f);
+        // init watcher for '.zide' folder
+        this.zideDirWatcher = new FileWatcher(this.getZideDir(), false, false);
+        this.zideDirWatcher.on('error', err => GlobalEvent.log_error(err));
+        this.zideDirWatcher.OnChanged = f => this.onZideDirChanged('changed', f);
+        this.zideDirWatcher.OnRename = f => this.onZideDirChanged('renamed', f);
 
         // compat old project
         if (this.isOldVersionProject) {
 
-            // these folder is for old eide version
+            // these folder is for old zide version
             // we will delete them
             const oldDepsFolders = [
-                new File(this.getEideDir().path + File.sep + 'deps'),
+                new File(this.getZideDir().path + File.sep + 'deps'),
                 new File(this.GetRootDir().path + File.sep + 'deps'),
                 new File(this.GetRootDir().path + File.sep + 'dependence')
             ];
@@ -1157,14 +1157,14 @@ export abstract class AbstractProject implements CustomConfigurationProvider, Pr
             const envFile: File = this.getEnvFile(true);
             if (!envFile.IsFile()) { // if 'env.ini' file is not existed, we try to merge it
                 const oldEnv: string[] = [];
-                this.getEideDir().GetList([/[^\.]+\.env\.ini$/], File.EXCLUDE_ALL_FILTER)
+                this.getZideDir().GetList([/[^\.]+\.env\.ini$/], File.EXCLUDE_ALL_FILTER)
                     .forEach((file) => {
                         const tName = NodePath.basename(file.path, '.env.ini');
                         if (tName) {
                             try {
                                 const cfg = ini.parse(file.Read());
                                 if (cfg['workspace']) { // merge old prj order cfg
-                                    cfg['EIDE_BUILD_ORDER'] = cfg['workspace']['order'];
+                                    cfg['ZIDE_BUILD_ORDER'] = cfg['workspace']['order'];
                                     delete cfg['workspace'];
                                 }
                                 const cfg_str = ini.stringify(cfg);
@@ -1189,8 +1189,8 @@ export abstract class AbstractProject implements CustomConfigurationProvider, Pr
                 // auto search includePath and libPath for old ver project
                 if (this.oldProjectVersion &&
                     compareVersion('3.3', this.oldProjectVersion) > 0) { // old ver < 3.3
-                    settings['EIDE.SourceTree.AutoSearchIncludePath'] = true;
-                    settings['EIDE.SourceTree.AutoSearchObjFile'] = true;
+                    settings['ZIDE.SourceTree.AutoSearchIncludePath'] = true;
+                    settings['ZIDE.SourceTree.AutoSearchObjFile'] = true;
                     workspaceConfig.Save(true); // save it now
                 }
             }
@@ -1248,8 +1248,8 @@ export abstract class AbstractProject implements CustomConfigurationProvider, Pr
 
         // remove old deps folder
         if (this.isOldVersionProject) {
-            prjConfig.RemoveSrcDir(NodePath.join(this.getRootDir().path, AbstractProject.EIDE_DIR, 'deps'));
-            prjConfig.CustomDep_RemoveIncDir(this.toAbsolutePath('.eide/deps'));
+            prjConfig.RemoveSrcDir(NodePath.join(this.getRootDir().path, AbstractProject.ZIDE_DIR, 'deps'));
+            prjConfig.CustomDep_RemoveIncDir(this.toAbsolutePath('.zide/deps'));
         }
     }
 
@@ -1355,8 +1355,8 @@ export abstract class AbstractProject implements CustomConfigurationProvider, Pr
         return new File(this.ToAbsolutePath(this.GetConfiguration().getOutDir()));
     }
 
-    getEideDir(): File {
-        return <File>this.eideDir;
+    getZideDir(): File {
+        return <File>this.zideDir;
     }
 
     GetConfigMap(): ConfigMap {
@@ -1471,7 +1471,7 @@ export abstract class AbstractProject implements CustomConfigurationProvider, Pr
             FileLock.unlock(this.lock_handle);
         this.sourceRoots.DisposeAll();
         this.configMap.Dispose();
-        this.eideDirWatcher?.Close();
+        this.zideDirWatcher?.Close();
     }
 
     async Create(option: CreateOptions) {
@@ -1965,7 +1965,7 @@ export abstract class AbstractProject implements CustomConfigurationProvider, Pr
     getLibsGeneratorCfgFile(notCreate: boolean = false): File {
 
         const target = this.getCurrentTarget().toLowerCase();
-        const optFile = File.fromArray([this.getEideDir().path, `${target}.libs.yml`]);
+        const optFile = File.fromArray([this.getZideDir().path, `${target}.libs.yml`]);
 
         if (!optFile.IsFile() && !notCreate) {
             const templateFile = File.fromArray([
@@ -2163,7 +2163,7 @@ $(OUT_DIR):
     }
 
     readIgnoreList(): string[] {
-        const ignoreFile = new File(this.ToAbsolutePath(`.${File.sep}.eideignore`));
+        const ignoreFile = new File(this.ToAbsolutePath(`.${File.sep}.zideignore`));
         if (ignoreFile.IsFile()) {
             return ignoreFile.Read()
                 .split(/\r\n|\n/)
@@ -2196,7 +2196,7 @@ $(OUT_DIR):
 
     getEnvFile(notInitFile?: boolean): File {
 
-        const envFile = new File(`${this.getEideDir().path}${File.sep}env.ini`);
+        const envFile = new File(`${this.getZideDir().path}${File.sep}env.ini`);
         if (!notInitFile && !envFile.IsFile()) {
             const defTxt: string[] = this.getEnvFileDefCont();
             defTxt.push(
@@ -2286,10 +2286,10 @@ $(OUT_DIR):
 
     getSourceExtraArgsCfgFile(notCreate: boolean = false): File {
 
-        const optFile = File.fromArray([this.getEideDir().path, `files.options.yml`]);
+        const optFile = File.fromArray([this.getZideDir().path, `files.options.yml`]);
         if (!optFile.IsFile() && !notCreate) {
-            const optsObj = <SourceFileOptions>{ version: EIDE_FILE_OPTION_VERSION, options: {} };
-            optsObj.version = EIDE_FILE_OPTION_VERSION;
+            const optsObj = <SourceFileOptions>{ version: ZIDE_FILE_OPTION_VERSION, options: {} };
+            optsObj.version = ZIDE_FILE_OPTION_VERSION;
             optsObj.options[this.getCurrentTarget()] = { files: {}, virtualPathFiles: {} };
             optFile.Write(view_str$prompt$filesOptionsComment + yaml.stringify(optsObj, { indent: 4, lineWidth: 1000 }));
         }
@@ -2315,7 +2315,7 @@ $(OUT_DIR):
         try {
             const optFile = this.getSourceExtraArgsCfgFile();
             const optsObj = <SourceFileOptions>yaml.parse(optFile.Read());
-            optsObj.version = EIDE_FILE_OPTION_VERSION;
+            optsObj.version = ZIDE_FILE_OPTION_VERSION;
             optsObj.options[targetName || this.getCurrentTarget()] = cfg;
             optFile.Write(view_str$prompt$filesOptionsComment + yaml.stringify(optsObj, { indent: 4, lineWidth: 1000 }));
         } catch (error) {
@@ -2950,12 +2950,12 @@ $(OUT_DIR):
 
         // init folders
         this.rootDir = new File(wsFile.dir);
-        this.eideDir = new File(this.rootDir.path + File.sep + AbstractProject.EIDE_DIR);
+        this.zideDir = new File(this.rootDir.path + File.sep + AbstractProject.ZIDE_DIR);
 
         // init cfgs
         this.configMap.Set(new WorkspaceConfiguration(wsFile).load(), AbstractProject.workspaceSuffix);
-        const eideJsonFile = File.from(wsFile.dir, AbstractProject.EIDE_DIR, AbstractProject.prjConfigName);
-        this.configMap.Set(new ProjectConfiguration(eideJsonFile, this.workspaceState).load());
+        const zideJsonFile = File.from(wsFile.dir, AbstractProject.ZIDE_DIR, AbstractProject.prjConfigName);
+        this.configMap.Set(new ProjectConfiguration(zideJsonFile, this.workspaceState).load());
 
         // create '.vscode' folder if it's not existed
         File.fromArray([wsFile.dir, AbstractProject.vsCodeDir]).CreateDir(true);
@@ -2986,14 +2986,14 @@ $(OUT_DIR):
         this.registerBuiltinVar('SYS_PathSeparator', () => platform.osType() != 'win32' ? ':' : ';');
         this.registerBuiltinVar('SYS_EOL', () => os.EOL);
 
-        // eide vars
-        this.registerBuiltinVar('EIDE_BUILDER_DIR', () => ResManager.instance().getUnifyBuilderExe().dir);
+        // zide vars
+        this.registerBuiltinVar('ZIDE_BUILDER_DIR', () => ResManager.instance().getUnifyBuilderExe().dir);
         for (const key in process.env) {
-            if (key.startsWith('EIDE_') && !key.startsWith('EIDE_TOOL_')) {
+            if (key.startsWith('ZIDE_') && !key.startsWith('ZIDE_TOOL_')) {
                 this.registerBuiltinVar(key, () => process.env[key] || '');
             }
         }
-        this.registerBuiltinVar('EIDE_PY3_CMD', () => ResManager.instance().getPython3());
+        this.registerBuiltinVar('ZIDE_PY3_CMD', () => ResManager.instance().getPython3());
     }
 
     private RegisterEvent(): void {
@@ -3046,15 +3046,15 @@ $(OUT_DIR):
     protected async BeforeLoad(wsFile: File): Promise<void> {
 
         // check project version
-        const eideFile = File.fromArray([wsFile.dir, AbstractProject.EIDE_DIR, AbstractProject.prjConfigName]);
-        const conf = ProjectConfiguration.parseProjectFile(eideFile.Read());
+        const zideFile = File.fromArray([wsFile.dir, AbstractProject.ZIDE_DIR, AbstractProject.prjConfigName]);
+        const conf = ProjectConfiguration.parseProjectFile(zideFile.Read());
         if (conf.version) {
             const prj_version = conf.version;
-            const eide_conf_v = EIDE_CONF_VERSION;
-            const prjv_vs_eidev = compareVersion(prj_version, eide_conf_v);
-            if (prjv_vs_eidev > 0) { // prj version > eide, error
-                throw Error(`The project config version is '${conf.version}', but eide is '${EIDE_CONF_VERSION}'. Please update 'eide' to the latest version !`);
-            } else if (prjv_vs_eidev < 0) { // prj version < eide
+            const zide_conf_v = ZIDE_CONF_VERSION;
+            const prjv_vs_zidev = compareVersion(prj_version, zide_conf_v);
+            if (prjv_vs_zidev > 0) { // prj version > zide, error
+                throw Error(`The project config version is '${conf.version}', but zide is '${ZIDE_CONF_VERSION}'. Please update 'zide' to the latest version !`);
+            } else if (prjv_vs_zidev < 0) { // prj version < zide
                 this.isOldVersionProject = true;
                 this.oldProjectVersion = prj_version;
             }
@@ -3081,9 +3081,9 @@ $(OUT_DIR):
             }
         }
 
-        // move old builder config files into eide.yml
+        // move old builder config files into zide.yml
         if (this.isOldVersionProject) {
-            const eideDir = File.from(eideFile.dir);
+            const zideDir = File.from(zideFile.dir);
             const toolchainManager = ToolchainManager.getInstance();
 
             const toolchainInfos: any[] = [];
@@ -3105,7 +3105,7 @@ $(OUT_DIR):
                 file: File,
                 notCleanup?: boolean
             }[] = [];
-            for (const file of eideDir.GetList(undefined, File.EXCLUDE_ALL_FILTER)) {
+            for (const file of zideDir.GetList(undefined, File.EXCLUDE_ALL_FILTER)) {
                 const tidx = toolchainInfos.findIndex(info => file.name.endsWith(info.configFileName));
                 if (tidx != -1) {
                     const toolInfo = toolchainInfos[tidx];
@@ -3124,7 +3124,7 @@ $(OUT_DIR):
                 }
             }
 
-            // copy all builder options into eide.yml
+            // copy all builder options into zide.yml
             const allTargetNames = Object.keys(conf.targets);
             for (const optionsInfo of allOptions) {
                 const idx = allTargetNames.findIndex(
@@ -3163,12 +3163,12 @@ $(OUT_DIR):
         }
 
         // merge *.files.options.yml
-        const optionsFile = File.from(eideFile.dir, 'files.options.yml');
+        const optionsFile = File.from(zideFile.dir, 'files.options.yml');
         if (!optionsFile.IsFile()) {
-            const eideDir = File.from(eideFile.dir);
+            const zideDir = File.from(zideFile.dir);
             const allFileOptions: { targetName: string, fileOptions: any }[] = [];
             // get all options
-            for (const file of eideDir.GetList([/\.files\.options\.yml$/i], File.EXCLUDE_ALL_FILTER)) {
+            for (const file of zideDir.GetList([/\.files\.options\.yml$/i], File.EXCLUDE_ALL_FILTER)) {
                 const target_l = file.name.replace('.files.options.yml', '');
                 if (target_l) {
                     const allTargets = Object.keys(conf.targets);
@@ -3179,14 +3179,14 @@ $(OUT_DIR):
                         const fileOptions = yaml.parse(file.Read());
                         allFileOptions.push({ targetName: allTargets[idx], fileOptions: fileOptions });
                     } else {
-                        GlobalEvent.log_warn(`This options file ".eide/${file.name}" not match any target. remove it !`);
+                        GlobalEvent.log_warn(`This options file ".zide/${file.name}" not match any target. remove it !`);
                     }
                     try { fs.unlinkSync(file.path) } catch {} // delete file
                 }
             }
             // merge all files options
             if (allFileOptions.length > 0) {
-                const optionsObj: SourceFileOptions = { 'version': EIDE_FILE_OPTION_VERSION, options: {} };
+                const optionsObj: SourceFileOptions = { 'version': ZIDE_FILE_OPTION_VERSION, options: {} };
                 allFileOptions.forEach(opts => {
                     const obj = opts.fileOptions;
                     obj.version = undefined;
@@ -3204,12 +3204,12 @@ $(OUT_DIR):
 
         /* udpate project version to lastest */
         if (this.isOldVersionProject) {
-            conf.version = EIDE_CONF_VERSION;
-            eideFile.Write(ProjectConfiguration.dumpProjectFile(conf));
-            // rm old eide.json file
-            const eideJsonFile = File.from(wsFile.dir, AbstractProject.EIDE_DIR, 'eide.json');
-            if (eideJsonFile.IsExist())
-                fs.unlinkSync(eideJsonFile.path);
+            conf.version = ZIDE_CONF_VERSION;
+            zideFile.Write(ProjectConfiguration.dumpProjectFile(conf));
+            // rm old zide.json file
+            const zideJsonFile = File.from(wsFile.dir, AbstractProject.ZIDE_DIR, 'zide.json');
+            if (zideJsonFile.IsExist())
+                fs.unlinkSync(zideJsonFile.path);
         }
     }
 
@@ -3217,12 +3217,12 @@ $(OUT_DIR):
 
         const prjConfig = this.GetConfiguration();
 
-        // start watch '.eide' folder
+        // start watch '.zide' folder
         try {
-            this.eideDirWatcher?.Watch();
+            this.zideDirWatcher?.Watch();
         } catch (error) {
             GlobalEvent.log_error(<Error>error);
-            GlobalEvent.emit('msg', newMessage('Error', `Cannot watch '.eide' folder, some functions will not available !`));
+            GlobalEvent.emit('msg', newMessage('Error', `Cannot watch '.zide' folder, some functions will not available !`));
         }
 
         // force flush toolchain dependence
@@ -3414,7 +3414,7 @@ $(OUT_DIR):
 
     protected abstract onTargetChanged(info: { name: string, isNew?: boolean }): void;
 
-    protected abstract onEideDirChanged(evt: 'changed' | 'renamed', file: File): void;
+    protected abstract onZideDirChanged(evt: 'changed' | 'renamed', file: File): void;
 
     //-----------------------------------------------------------
 
@@ -3433,11 +3433,11 @@ $(OUT_DIR):
     abstract ExportToKeilProject(saveFile?: File): File | undefined;
 
     static NewProject(workspaceState: vscode.Memento): AbstractProject {
-        return new EIDEProject(workspaceState);
+        return new ZIDEProject(workspaceState);
     }
 }
 
-class EIDEProject extends AbstractProject {
+class ZIDEProject extends AbstractProject {
 
     //////////////////////////////// Event handler ///////////////////////////////////
 
@@ -3509,7 +3509,7 @@ class EIDEProject extends AbstractProject {
                 this.UpdateCppConfig();
                 break;
             case 'projectFileChanged':
-                console.log(`eide project file changed: ${this.getProjectFile().path}`);
+                console.log(`zide project file changed: ${this.getProjectFile().path}`);
                 this.emit('projectFileChanged');
                 break;
             default:
@@ -3590,14 +3590,14 @@ class EIDEProject extends AbstractProject {
         if (t.isNew) this.Save();
     }
 
-    protected onEideDirChanged(evt: 'changed' | 'renamed', file: File): void {
+    protected onZideDirChanged(evt: 'changed' | 'renamed', file: File): void {
 
         const target = this.getCurrentTarget().toLowerCase();
 
         if (evt == 'changed') {
 
             // source extra compiler args changed
-            const cfgFile = File.fromArray([this.getEideDir().path, `${target}.files.options.yml`]);
+            const cfgFile = File.fromArray([this.getZideDir().path, `${target}.files.options.yml`]);
             if (file.path == cfgFile.path && cfgFile.IsFile()) {
                 this.onSrcExtraOptionsChanged(evt);
             }
@@ -3803,12 +3803,12 @@ class EIDEProject extends AbstractProject {
         // if workspace is existed, force delete it
         if (wsFile.IsFile()) { try { fs.unlinkSync(wsFile.path); } catch (error) { } }
 
-        File.fromArray([wsFile.dir, AbstractProject.EIDE_DIR]).CreateDir(true);
+        File.fromArray([wsFile.dir, AbstractProject.ZIDE_DIR]).CreateDir(true);
         File.fromArray([wsFile.dir, AbstractProject.vsCodeDir]).CreateDir(true);
 
         const wsConfig = new WorkspaceConfiguration(wsFile).load();
-        const eideFile = File.fromArray([wsFile.dir, AbstractProject.EIDE_DIR, AbstractProject.prjConfigName]);
-        const prjConfig = new ProjectConfiguration(eideFile, this.workspaceState, option.type).load();
+        const zideFile = File.fromArray([wsFile.dir, AbstractProject.ZIDE_DIR, AbstractProject.prjConfigName]);
+        const prjConfig = new ProjectConfiguration(zideFile, this.workspaceState, option.type).load();
 
         // set project name
         prjConfig.config.name = option.projectName || AbstractProject.formatProjectName(option.name);
@@ -3921,14 +3921,14 @@ class EIDEProject extends AbstractProject {
 
     private async runInstallScript(prjRoot: File, scriptName: string, title?: string): Promise<boolean> {
 
-        const script = File.fromArray([prjRoot.path, AbstractProject.EIDE_DIR, scriptName]);
+        const script = File.fromArray([prjRoot.path, AbstractProject.ZIDE_DIR, scriptName]);
         if (!script.IsFile())
             return true; // not found script, exit
 
         try {
 
             const proc = new ExeCmd();
-            const cmd = `./${AbstractProject.EIDE_DIR}/${scriptName}`;
+            const cmd = `./${AbstractProject.ZIDE_DIR}/${scriptName}`;
 
             title = title || script.noSuffixName;
 
@@ -3974,7 +3974,7 @@ class EIDEProject extends AbstractProject {
             const name = 'pre-install.sh';
             const prjRoot = new File(wsFile.dir);
             const ok = await this.runInstallScript(prjRoot, name, `Running 'pre-install' task ...`);
-            if (!ok) { throw new Error(`Run '${name}' failed !, please check logs in 'eide-log' output panel.`); }
+            if (!ok) { throw new Error(`Run '${name}' failed !, please check logs in 'zide-log' output panel.`); }
         }
     }
 
@@ -3991,7 +3991,7 @@ class EIDEProject extends AbstractProject {
             const workspaceConfig = this.GetWorkspaceConfig();
             const settings = workspaceConfig.config.settings;
 
-            // --- eide settings
+            // --- zide settings
             // TODO
 
             // --- vscode settings
@@ -4033,7 +4033,7 @@ class EIDEProject extends AbstractProject {
             });
 
             const fileAssCfg: any = {
-                ".eideignore": "ignore",
+                ".zideignore": "ignore",
                 "*.a51": "a51",
                 "*.h": "c",
                 "*.c": "c",
@@ -4071,35 +4071,35 @@ class EIDEProject extends AbstractProject {
                     {
                         "label": "build",
                         "type": "shell",
-                        "command": "${command:eide.project.build}",
+                        "command": "${command:zide.project.build}",
                         "group": "build",
                         "problemMatcher": []
                     },
                     {
                         "label": "flash",
                         "type": "shell",
-                        "command": "${command:eide.project.uploadToDevice}",
+                        "command": "${command:zide.project.uploadToDevice}",
                         "group": "build",
                         "problemMatcher": []
                     },
                     {
                         "label": "build and flash",
                         "type": "shell",
-                        "command": "${command:eide.project.buildAndFlash}",
+                        "command": "${command:zide.project.buildAndFlash}",
                         "group": "build",
                         "problemMatcher": []
                     },
                     {
                         "label": "rebuild",
                         "type": "shell",
-                        "command": "${command:eide.project.rebuild}",
+                        "command": "${command:zide.project.rebuild}",
                         "group": "build",
                         "problemMatcher": []
                     },
                     {
                         "label": "clean",
                         "type": "shell",
-                        "command": "${command:eide.project.clean}",
+                        "command": "${command:zide.project.clean}",
                         "group": "build",
                         "problemMatcher": []
                     }
@@ -4126,7 +4126,7 @@ class EIDEProject extends AbstractProject {
             // add extension recommendation
             {
                 let recommendExt: string[] = [
-                    "cl.eide",
+                    "cl.zide",
                     "keroc.hex-fmt",
                     "xiaoyongdong.srecord",
                     "hars.cppsnippets",
@@ -4168,15 +4168,15 @@ class EIDEProject extends AbstractProject {
                     '# dot files',
                     '/.vscode/launch.json',
                     '/.settings',
-                    '/.eide/log',
-                    '/.eide.usr.ctx.json',
+                    '/.zide/log',
+                    '/.zide.usr.ctx.json',
                     '',
                     '# project out',
                     '/build', '/bin', '/obj', '/out',
                     '',
-                    '# eide template',
+                    '# zide template',
                     '*.ept',
-                    '*.eide-template',
+                    '*.zide-template',
                     ''
                 ];
 
@@ -4226,9 +4226,9 @@ class EIDEProject extends AbstractProject {
             }
         }
 
-        // delete '.eide/log' folder
+        // delete '.zide/log' folder
         if (this.isNewProject || this.isOldVersionProject) {
-            const _d = File.from(this.getRootDir().path, '.eide', 'log');
+            const _d = File.from(this.getRootDir().path, '.zide', 'log');
             if (_d.IsDir()) {
                 try {
                     platform.DeleteDir(_d);
@@ -4256,7 +4256,7 @@ class EIDEProject extends AbstractProject {
             this.runInstallScript(this.GetRootDir(), 'post-install.sh', `Running 'post-install' task ...`)
                 .then((done) => {
                     if (!done) {
-                        const msg = `Run 'post-install' failed !, please check logs in 'eide-log' output panel.`;
+                        const msg = `Run 'post-install' failed !, please check logs in 'zide-log' output panel.`;
                         vscode.window.showWarningMessage(msg);
                         GlobalEvent.emit('globalLog.show');
                     }
@@ -4273,8 +4273,8 @@ class EIDEProject extends AbstractProject {
 
     ////////////////////////////////// cpptools intellisence provider ///////////////////////////////////
 
-    name: string = 'eide';
-    extensionId: string = 'cl.eide';
+    name: string = 'zide';
+    extensionId: string = 'cl.zide';
 
     // virtual source path list (!! must be real absolute path !!)
     //      key: fsPath

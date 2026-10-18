@@ -72,7 +72,7 @@ export const ipcPingIntervalMs = 10_000;
 export const toolCallTimeoutMs = 300_000;
 export const healthCheckTimeoutMs = 3_000;
 
-const mcpTmpSubDir = 'eide-mcp';
+const mcpTmpSubDir = 'zide-mcp';
 
 export function getMcpTmpDir(): string {
     return path.join(os.tmpdir(), mcpTmpSubDir);

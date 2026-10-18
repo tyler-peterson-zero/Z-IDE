@@ -31,12 +31,12 @@ import { DeleteDir, DeleteAllChildren } from './Platform';
 import {
     ProjectConfiguration, Dependence,
     DependenceGroup, ProjectType, ManagerInterface
-} from './EIDETypeDefine';
-import { Component, ComponentFileItem } from './EIDEProjectModules';
+} from './ZIDETypeDefine';
+import { Component, ComponentFileItem } from './ZIDEProjectModules';
 import { GlobalEvent } from './GlobalEvents';
 import { SettingManager } from './SettingManager';
 import { ExceptionToMessage } from './Message';
-import { AbstractProject, VirtualSource } from './EIDEProject';
+import { AbstractProject, VirtualSource } from './ZIDEProject';
 import { ArrayDelRepetition } from '../lib/node-utility/Utility';
 
 export class DependenceManager implements ManagerInterface {
@@ -449,7 +449,7 @@ export class DependenceManager implements ManagerInterface {
 
         let content: string[] = [
             '/*-----------------------------------------------------------------------------------*/',
-            '/* Auto generate by EIDE, don\'t modify this file, any changes will be overwritten ! */',
+            '/* Auto generate by ZIDE, don\'t modify this file, any changes will be overwritten ! */',
             '/*-----------------------------------------------------------------------------------*/',
             '',
             '#ifndef RTE_COMPONENTS_H',

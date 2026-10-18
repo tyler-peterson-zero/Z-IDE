@@ -25,7 +25,7 @@
             "include": "#operators"
         },
         {
-            "include": "#eide_builtin_func"
+            "include": "#zide_builtin_func"
         }
     ],
     "repository": {
@@ -133,7 +133,7 @@
                             "include": "#section_name"
                         },
                         {
-                            "include": "#eide_var"
+                            "include": "#zide_var"
                         }
                     ]
                 }
@@ -147,7 +147,7 @@
                 }
             }
         },
-        "eide_builtin_func": {
+        "zide_builtin_func": {
             "match": "\\$<(?:objs|libs):.+?>",
             "captures": {
                 "0": {
@@ -155,7 +155,7 @@
                 }
             }
         },
-        "eide_var": {
+        "zide_var": {
             "match": "\\$\\{\\w+\\}",
             "captures": {
                 "0": {

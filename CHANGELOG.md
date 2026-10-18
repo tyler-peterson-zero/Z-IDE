@@ -9,21 +9,21 @@ All notable version changes will be recorded in this file.
 ### [v3.27.2] revision
 
 **Fix**:
-  - `Runtime compatibility`: Fixed NodeJS API deprecations (`DEP0051` and `DEP0044`). [Issue 542 543 544](https://github.com/github0null/eide/issues/542)
+  - `Runtime compatibility`: Fixed NodeJS API deprecations (`DEP0051` and `DEP0044`). [Issue 542 543 544](https://github.com/github0null/zide/issues/542)
 
 ***
 
 ### [v3.27.0] update
 
 **New**:
-  - `MCP Server`: Add mcp server to export eide built-in functions. Settings: `EIDE.MCP.Server.Enable`, `EIDE.MCP.Server.Port`
+  - `MCP Server`: Add mcp server to export zide built-in functions. Settings: `ZIDE.MCP.Server.Enable`, `ZIDE.MCP.Server.Port`
   - `MCP SKILL`: https://gist.github.com/github0null/5c08fb61bb4a705f1dc9b03dcb980f93
   - `Callgraph View`: Add callgraph view and new options `-fcallgraph-info`, `-fstack-usage` for gcc toolchain.
 
 **Fix**:
   - `Cppcheck`: Fixed cppcheck config generate.
   - `Symbol Table`: Fixed size column override table header.
-  - `Clangd Config`: See ![PR 532](https://github.com/github0null/eide/pull/532) . Thanks [inaku-Gyan](https://github.com/inaku-Gyan)
+  - `Clangd Config`: See ![PR 532](https://github.com/github0null/zide/pull/532) . Thanks [inaku-Gyan](https://github.com/inaku-Gyan)
 
 **Changes**:
   - `Devtools`: Update node version to **v18** and min vscode version require **v1.89.0**.
@@ -58,7 +58,7 @@ All notable version changes will be recorded in this file.
 
 **Changes**:
   - `axf2elf Removed`: This function now is deprecated because we can use 'loadFiles', 'symbolFiles' options to load ac5/ac6 axf.
-  - `Project Export`: Check [PR 511](https://github.com/github0null/eide/pull/511) for more details.
+  - `Project Export`: Check [PR 511](https://github.com/github0null/zide/pull/511) for more details.
 
 ***
 
@@ -74,7 +74,7 @@ All notable version changes will be recorded in this file.
 
 **Improve**:
   - `Project Diagnostics`: Add code action for stub func missed warning. (to auto fix gcc warning: "_xxx is not implemented and will always fail")
-  - `Toolchain Setup`: Goto eide tools folder by default when user start to select a location.
+  - `Toolchain Setup`: Goto zide tools folder by default when user start to select a location.
 
 ***
 
@@ -84,13 +84,13 @@ All notable version changes will be recorded in this file.
   - `Symbol Table View`: New symbol table UI (with c++ symbol name demangler).
 
 **Fix**:
-  - `Toolchain Options`: Fix [issue 495](https://github.com/github0null/eide/issues/495)
-  - `Project Importer`: Fix [issue 491](https://github.com/github0null/eide/issues/491)
-  - `axf2elf Tool`: ELF files too large when addresses not contiguous. [PR 6](https://github.com/github0null/eide_tools/pull/6)
+  - `Toolchain Options`: Fix [issue 495](https://github.com/github0null/zide/issues/495)
+  - `Project Importer`: Fix [issue 491](https://github.com/github0null/zide/issues/491)
+  - `axf2elf Tool`: ELF files too large when addresses not contiguous. [PR 6](https://github.com/github0null/zide_tools/pull/6)
 
 **Improve**:
   - `unify_builder`: Use independent lock file instead of `unify_builder.log` file.
-  - `Debug Config Provider`: Add chipDescriptionPath support for probe-rs. [PR 499](https://github.com/github0null/eide/pull/499)
+  - `Debug Config Provider`: Add chipDescriptionPath support for probe-rs. [PR 499](https://github.com/github0null/zide/pull/499)
   - `memap View`: Update memap command.
   - `Intellisense Provider`: Update armclang lint file.
 
@@ -100,14 +100,14 @@ All notable version changes will be recorded in this file.
 
 **Fix**:
   - `Project Toolchain`: Revert commit 'support generic gcc for arm or riscv projects.'
-  - `Project Migration`: Fix user context data not migrated. [issues 479](https://github.com/github0null/eide/issues/479)
+  - `Project Migration`: Fix user context data not migrated. [issues 479](https://github.com/github0null/zide/issues/479)
 
 ***
 
 ### [v3.26.0] update
 
 **Change**:
-  - `Project File`: Use yaml instead of json and update project data schema. Rename `eide.json` to `eide.yml`.
+  - `Project File`: Use yaml instead of json and update project data schema. Rename `zide.json` to `zide.yml`.
 
 **Fix**:
   - `Target Switch`: Fix file's options was overrided when switch to other target.
@@ -122,7 +122,7 @@ All notable version changes will be recorded in this file.
 ### [v3.25.7] revision
 
 **Improve**:
-  - `Builder Options`: Support ARM/Thumb Mode select options. Fix [issues 475](https://github.com/github0null/eide/issues/475)
+  - `Builder Options`: Support ARM/Thumb Mode select options. Fix [issues 475](https://github.com/github0null/zide/issues/475)
 
 ***
 
@@ -172,7 +172,7 @@ All notable version changes will be recorded in this file.
   - `8051 Toolchain`: Support new SDCC + Binutils Toolchain for mcs51 https://github.com/github0null/sdcc-binutils-mcs51/blob/master/README_zh.md
 
 **Fix**:
-  - `ELF View`: Fix issue [461](https://github.com/github0null/eide/issues/461)
+  - `ELF View`: Fix issue [461](https://github.com/github0null/zide/issues/461)
 
 ***
 
@@ -218,7 +218,7 @@ All notable version changes will be recorded in this file.
   - `Eclipse Project Import`: Incorrect project type was detected.
 
 **Change**:
-  - `EIDE View Container`: By default, we will collapse the `Operations` view.
+  - `ZIDE View Container`: By default, we will collapse the `Operations` view.
   - `Webpanel Views`: Starting from this version, we will use singleton pattern for `Builder Options View`, `Storage Layout View`, `Cmsis Header Config Wizard`, This means that for each view, only one page can be opened for each project.
 
 ***
@@ -242,7 +242,7 @@ All notable version changes will be recorded in this file.
   - `LLVM Arm Toolchain`: Support `map view`, `symbol tables` features for LLVM Arm Toolchain.
   - `Switch Target`: Improve using status-bar to switch target.
   - `Builder Options`: Improve description text for some options.
-  - `Plug-in Settings`: New option: `EIDE.Option.EnableClangdConfigGenerator` to control auto generate '.clangd' file.
+  - `Plug-in Settings`: New option: `ZIDE.Option.EnableClangdConfigGenerator` to control auto generate '.clangd' file.
 
 **Change**:
   - `unify_builder`: Update to v3.10.1
@@ -267,7 +267,7 @@ All notable version changes will be recorded in this file.
 
 ### [v3.22.0] update
 
-> NOTE: Update the version of file `eide.json` to `v3.6`
+> NOTE: Update the version of file `zide.json` to `v3.6`
 
 **New**:
   - `Toolchain`: Add `Armv8-M.Main, Armv8.1-M.Main` architectures support for `AC6 (armclang)` and `arm-none-eabi-gcc`.
@@ -276,7 +276,7 @@ All notable version changes will be recorded in this file.
   - `Keil Project Import`: Miss match RTE source files when import mdk arm projects. Fix mdk C macro importer.
 
 **Change**:
-  - `Exclude List`: Show all exclude list for every targets. (command: `_cl.eide.project.source.modify.exclude_list`)
+  - `Exclude List`: Show all exclude list for every targets. (command: `_cl.zide.project.source.modify.exclude_list`)
   - `CMSIS Core Headers`: Built-in cmsis header zip files in plug-in.
 
 ***
@@ -358,8 +358,8 @@ All notable version changes will be recorded in this file.
   - `Compile Database Generator`: Auto generate `compile_commands.json`.
 
 **Changes**:
-  - `Custom Task`: Rename task type `eide.msys` to `eide.bash`.
-  - `Project Build`: Remove project variables which starts with `EIDE_TOOL_`.
+  - `Custom Task`: Rename task type `zide.msys` to `zide.bash`.
+  - `Project Build`: Remove project variables which starts with `ZIDE_TOOL_`.
 
 ***
 
@@ -394,7 +394,7 @@ All notable version changes will be recorded in this file.
 
 **New**:
   - `Plug-in Settings`: New plug-in settings: `Win32.Msys.Enable`, to determine whether to enable the built-in MSYS tools.
-  - `Project Variables`: Export `EIDE_xxx` variables into project variables.
+  - `Project Variables`: Export `ZIDE_xxx` variables into project variables.
 
 **Change**:
   - ~~`Other`: Append msys path to the tail of system PATH, not head.~~
@@ -417,7 +417,7 @@ All notable version changes will be recorded in this file.
 ### [v3.19.6] update
 
 **Change**:
-  - `Builder Options`: Combine all builder options (`*.options.json`) into `eide.json`.
+  - `Builder Options`: Combine all builder options (`*.options.json`) into `zide.json`.
   - `Files Options`: Combine all file's options (`*.files.options.yml`) into single file: `files.options.yml`.
 
 **Optimize**:
@@ -440,7 +440,7 @@ Update build environment to NodeJS `v16`.
 ### [v3.18.1] revision
 
 **Fix**:
-  - `Project Resources`: When user unfold an unsorted vritual sources folder, the 'eide.json' will be changed by mistake.
+  - `Project Resources`: When user unfold an unsorted vritual sources folder, the 'zide.json' will be changed by mistake.
 
 ***
 
@@ -448,7 +448,7 @@ Update build environment to NodeJS `v16`.
 
 **Incompatible Changes**:
   - `Chip Support Package`: 
-    - Remove folder: `.eide/deps` and use VirtualFolder `<virtual_root>/<deps>` instead it.
+    - Remove folder: `.zide/deps` and use VirtualFolder `<virtual_root>/<deps>` instead it.
     - The Chip Support Package in older projects will become invalid. And you need to reinstall chip-package and reinstall all CMSIS components.
 
 **New**:
@@ -499,7 +499,7 @@ Update build environment to NodeJS `v16`.
 
 **New**:
   - `unify_builder`: Print 'Section Memory Usage' for AC5 / AC6 Compiler.
-  - `Global Environment Variables`: A new plug-in settings: 'EIDE.Builder.EnvironmentVariables' for preset some global `Environment Variables`.
+  - `Global Environment Variables`: A new plug-in settings: 'ZIDE.Builder.EnvironmentVariables' for preset some global `Environment Variables`.
 
 **Change**:
   - `unify_builder`: Bundle unify_builder executable files in plug-in package.
@@ -578,14 +578,14 @@ Merge `v3.16.2-prerelease` bugs fix.
 
 **Optimize**:
   - `Model files`: Remove model file's UTF8-BOM header
-  - `Project auto reload`: Optimize auto save/reload project when you modified 'eide.json'
+  - `Project auto reload`: Optimize auto save/reload project when you modified 'zide.json'
 
 ***
 
 ### [v3.13.2023060401] revision
 
 **Fix**:
-  - `Incorrect GCC Options`: Move gcc '--specs=xxx' options to 'global' region. [issue](https://github.com/github0null/eide/issues/259)
+  - `Incorrect GCC Options`: Move gcc '--specs=xxx' options to 'global' region. [issue](https://github.com/github0null/zide/issues/259)
 
 **Optimize**:
   - `Source Exclude List`: Allow use Env Variables in exclude path string.
@@ -675,7 +675,7 @@ Merge `v3.16.2-prerelease` bugs fix.
   - `unify_builder`: Add 'ASM_FLAGS' for sdcc sdxxasm.
   - `Debug Config`: Auto generate toolchain prefix for cortex-debug.
 
-**Please update `eide_binaries` to v11.0.1+ (Restart plug-in to auto fetch update).**
+**Please update `zide_binaries` to v11.0.1+ (Restart plug-in to auto fetch update).**
 
 ***
 
@@ -683,7 +683,7 @@ Merge `v3.16.2-prerelease` bugs fix.
 
 **New**:
   - `Disassembly View`: Add 'Visualize Jumps' for disassembly code, [more informations](https://interrupt.memfault.com/blog/gnu-binutils#new-feature-visualize-jumps)
-  - `Language Mode`: Add a setting `EIDE.DisplayLanguage` to choose a language for UI, prompts.
+  - `Language Mode`: Add a setting `ZIDE.DisplayLanguage` to choose a language for UI, prompts.
 
 **Fix**:
   - `Memory Layout View`: Error format when user input an integer number.
@@ -710,7 +710,7 @@ Merge `v3.16.2-prerelease` bugs fix.
     ![](https://em-ide.com/public-assets/img/v3.11.x/toolchain_cfg_preview.png)
   
 **Change**:
-  - `Remove Built-in Serial-Monitor`: We removed built-in serial monitor for eide. Please use [ms-vscode.vscode-serial-monitor](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-serial-monitor) now !
+  - `Remove Built-in Serial-Monitor`: We removed built-in serial monitor for zide. Please use [ms-vscode.vscode-serial-monitor](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-serial-monitor) now !
   - `Extra Compiler Args For Source Files`: For `virtualPathFiles`, pattern must start with: `<virtual_root>/`
 
 ***
@@ -758,7 +758,7 @@ Merge `v3.16.2-prerelease` bugs fix.
 **New**:
   - `Project Resource`: Allow drag and drop files and folders in UI (**Only for virtual source items**): 
     
-    ![](https://em-ide.com/public-assets/img/eide_drag_and_drop.gif)
+    ![](https://em-ide.com/public-assets/img/zide_drag_and_drop.gif)
 
 **Change**:
   - `Minimum Version Requirement Of VSCode`: Change `v1.63.0` to `v1.67.0`
@@ -772,7 +772,7 @@ Merge `v3.16.2-prerelease` bugs fix.
 
 **Optimize**:
   - `Resource Explorer`: Keep `non-existed` filesystem source folders. Optimize folder watcher
-  - `Settings Scope`: Allow user override more eide settings by `workspace settings`.
+  - `Settings Scope`: Allow user override more zide settings by `workspace settings`.
   - `FileWatcher`: Auto close file watcher if watcher has an error.
   - `Prompt messages`: Optimize some UI hint messages.
 
@@ -791,24 +791,24 @@ Merge `v3.16.2-prerelease` bugs fix.
 ### [v3.10.4] revision
 
 **Fix**:
-  - `Task type: 'eide.msys'`: The `env` property does not work.
+  - `Task type: 'zide.msys'`: The `env` property does not work.
 
 **Change**:
-  - `Task type: 'eide.msys'`: Use `label` property for task title, not `name`
+  - `Task type: 'zide.msys'`: Use `label` property for task title, not `name`
 
 ***
 
 ### [v3.10.3] revision
 
 **New**:
-  - `New task type: 'eide.msys'`: You can write user task in `tasks.json` file, and execute `unix shell` command in `windows` platform.
+  - `New task type: 'zide.msys'`: You can write user task in `tasks.json` file, and execute `unix shell` command in `windows` platform.
   - `Github Template`: Allow Create Project From Github Repository. 
 
 **Optimize**:
   - `High Cpu Load`: Don't check and search toolchain path when plug-in startup, cache search result.
   - `Riscv Builder Options UI`: Add auto-complete for `arch`, `abi`, `code-model` options.
   - `Cmsis Core Libraries`: Filter unused `*.lib` when unzip cmsis core libraries.
-  - `Openocd v0.12.0-rc2`: Update Openocd to `v0.12.0-rc2`, repo: `https://github.com/github0null/eide_builtin_openocd`
+  - `Openocd v0.12.0-rc2`: Update Openocd to `v0.12.0-rc2`, repo: `https://github.com/github0null/zide_builtin_openocd`
 
 ***
 
@@ -823,7 +823,7 @@ Merge `v3.16.2-prerelease` bugs fix.
 
 **Optimize**:
   - `Configure Toolchain`: Don't check all toolchain status when plug-in launch.
-  - `Resource Manager`: Don't remove non-existed source dirs in eide.json.
+  - `Resource Manager`: Don't remove non-existed source dirs in zide.json.
 
 ***
 
@@ -932,7 +932,7 @@ Merge `v3.16.2-prerelease` bugs fix.
 
 **Change**:
   - Remove terminal problem matcher, use `vscode.Diagnostic` api to provide project problem after build end
-  - Provide more terminal link matcher for eide builder task
+  - Provide more terminal link matcher for zide builder task
 
 **Optimize**:
   - Add `${configName}` in file path env map
@@ -951,7 +951,7 @@ Merge `v3.16.2-prerelease` bugs fix.
 
 **Change**:
   - Remove terminal problem matcher, use `vscode.Diagnostic` api to provide project problem after build end
-  - Provide more terminal link matcher for eide builder task
+  - Provide more terminal link matcher for zide builder task
 
 ***
 
@@ -988,8 +988,8 @@ Merge `v3.16.2-prerelease` bugs fix.
   - Brand new documentation, product landing page, here: https://em-ide.com
 
 **Change**:
-  - Adjust `eide.json` structure
-  - Generate a `.eide.usr.ctx.json` file to save user context data (can be ignored in `.gitignore`)
+  - Adjust `zide.json` structure
+  - Generate a `.zide.usr.ctx.json` file to save user context data (can be ignored in `.gitignore`)
 
 **Optimize**:
   - Format project name when import project from other IDE
@@ -1009,10 +1009,10 @@ Merge `v3.16.2-prerelease` bugs fix.
 ### [v3.8.2] revision
 
 **New**:
-  - 支持通过 [external_tools_index](https://github.com/github0null/eide_default_external_tools_index) 安装更多的外部工具，并在插件激活后自动将这些工具的路径附加到VSCode当前的环境变量中
+  - 支持通过 [external_tools_index](https://github.com/github0null/zide_default_external_tools_index) 安装更多的外部工具，并在插件激活后自动将这些工具的路径附加到VSCode当前的环境变量中
 
 **Change**:
-  - 将 log 输出至 `<user-home>/.eide/cl.eide.log`，不再将 `.eide/log` 目录作为 log 存放位置
+  - 将 log 输出至 `<user-home>/.zide/cl.zide.log`，不再将 `.zide/log` 目录作为 log 存放位置
 
 ***
 
@@ -1020,14 +1020,14 @@ Merge `v3.16.2-prerelease` bugs fix.
 
 **New**:
   - 新增 Eclipse 项目导入功能
-  - 新增 `Setup Utility Tools` 功能 (位于 Operation 栏)，可用于自动安装 eide 默认提供的相关工具
+  - 新增 `Setup Utility Tools` 功能 (位于 Operation 栏)，可用于自动安装 zide 默认提供的相关工具
   - 为 Arm 项目提供更多的 cpu 选项
   - 支持为 'Custom Flasher' 设置全片擦除命令
-  - 新增终端类型：`Eide Terminal`, 插件已将 内置工具，编译器等二进制程序路径 导出至该终端的环境变量
+  - 新增终端类型：`Zide Terminal`, 插件已将 内置工具，编译器等二进制程序路径 导出至该终端的环境变量
   - 增加两个设置项，用于决定是否自动搜索和添加 `IncludePath` 及 `.obj .a` 至项目（默认值为 false）
     ```
-    EIDE.SourceTree.AutoSearchIncludePath
-    EIDE.SourceTree.AutoSearchObjFile
+    ZIDE.SourceTree.AutoSearchIncludePath
+    ZIDE.SourceTree.AutoSearchObjFile
     ```
   - 增加以下新的 `builder task` 变量:
     ```
@@ -1074,7 +1074,7 @@ Merge `v3.16.2-prerelease` bugs fix.
   - 新建空项目时，不再自动生成默认 `main.c` 文件
   - 项目中所有的配置文件名都加上 `target name` 前缀（在旧的版本中，仅 `release` target 无前缀）
   - 新建构建配置时，armclang 默认汇编器改为 arm-auto
-  - armcc 问题匹配器正则表达式调整：https://github.com/github0null/eide/blob/4f91c5bc43ff699f0f2f569a573d1a49be4e8d3a/package.json#L1511
+  - armcc 问题匹配器正则表达式调整：https://github.com/github0null/zide/blob/4f91c5bc43ff699f0f2f569a573d1a49be4e8d3a/package.json#L1511
 
 **Optimize**:
   - 根据 stvp 烧录配置的芯片名，从 stvp database 中获取 `ram, flash` 大小，用于在编译时显示 `ram/flash` 占比
@@ -1135,18 +1135,18 @@ Merge `v3.16.2-prerelease` bugs fix.
 
 **New**:
   - 新增 Eclipse 项目导入功能
-  - 新增 `Setup Utility Tools` 功能 (位于 Operation 栏)，可用于自动安装 eide 默认提供的相关工具
+  - 新增 `Setup Utility Tools` 功能 (位于 Operation 栏)，可用于自动安装 zide 默认提供的相关工具
 
 ***
 
 ### [v3.7.2022071301] preview version
 
 **New**:
-  - 新增终端类型：`Eide Terminal`, 插件已将 内置工具，编译器等二进制程序路径 导出至该终端的环境变量
+  - 新增终端类型：`Zide Terminal`, 插件已将 内置工具，编译器等二进制程序路径 导出至该终端的环境变量
   - 增加两个设置项，用于决定是否自动搜索和添加 `include path` 及 `.obj .a` 至项目（对于新建项目，默认值为 false）：
     ```
-    EIDE.SourceTree.AutoSearchIncludePath
-    EIDE.SourceTree.AutoSearchObjFile
+    ZIDE.SourceTree.AutoSearchIncludePath
+    ZIDE.SourceTree.AutoSearchObjFile
     ```
   - 增加以下新的 `builder task` 变量:
     ```
@@ -1213,7 +1213,7 @@ Merge `v3.16.2-prerelease` bugs fix.
   - 增加 Save Project 右键菜单项
 
 **Change**:
-  - armcc 问题匹配器正则表达式调整：https://github.com/github0null/eide/blob/4f91c5bc43ff699f0f2f569a573d1a49be4e8d3a/package.json#L1511
+  - armcc 问题匹配器正则表达式调整：https://github.com/github0null/zide/blob/4f91c5bc43ff699f0f2f569a573d1a49be4e8d3a/package.json#L1511
   - 自动保存项目改为 3min 间隔
 
 **Optimize**:
@@ -1236,7 +1236,7 @@ Merge `v3.16.2-prerelease` bugs fix.
   - 对于离线 vsix 安装包，支持直接安装内置的 .NET6 运行时（仅windows）
 
 **Change**:
-  - 使用 2 空格缩进 'eide.json'，便于 `git diff`
+  - 使用 2 空格缩进 'zide.json'，便于 `git diff`
   - 使用 `dotnet --list-runtimes` 检查运行时
   - 未找到 .NET6 运行时时，自动安装默认版本 `.NET6.0.5 runtime`，不再给出提示让用户确认（仅windows）
 
@@ -1246,10 +1246,10 @@ Merge `v3.16.2-prerelease` bugs fix.
   - 在安装 cmsis 组件时，自动检查 deps 组件根目录是否已加入项目
   - 删除多余的设置项：
     ```
-    EIDE.Option.ShowOutputFilesInExplorer
-    EIDE.Option.ShowSourceReferences
-    EIDE.Option.PrintRelativePathWhenBuild
-    EIDE.Builder.GenerateMakefileParameters
+    ZIDE.Option.ShowOutputFilesInExplorer
+    ZIDE.Option.ShowSourceReferences
+    ZIDE.Option.PrintRelativePathWhenBuild
+    ZIDE.Builder.GenerateMakefileParameters
     ```
 
 ***
@@ -1294,7 +1294,7 @@ Merge `v3.16.2-prerelease` bugs fix.
 
 **Fixed**:
   - When there are too many nested folders, the response is slow when excluding directories.
-  - Can not auto fetch eide-binaries update.
+  - Can not auto fetch zide-binaries update.
 
 **Changed**:
   - Merge unify_builder's commandline args to a single params file.
@@ -1307,7 +1307,7 @@ Merge `v3.16.2-prerelease` bugs fix.
 ### [v3.5.4]
 
 **Fixed**:
-  - Duplicated include path items: `.eide/deps` in project.
+  - Duplicated include path items: `.zide/deps` in project.
   - Can not parse old version `JLinkDevices.xml`.
   - Enum serialport failed when use `65001` code-page in windows os.
 
@@ -1340,7 +1340,7 @@ Merge `v3.16.2-prerelease` bugs fix.
 **Changed**:
   - Remove `extensionDependencies` and built-in auto active extensionDependencies.
   - Force use unix path for virtual source path to compat old project.
-  - Adjust default `project templates repo`, now it's: https://github.com/github0null/eide-templates
+  - Adjust default `project templates repo`, now it's: https://github.com/github0null/zide-templates
 
 ***
 
@@ -1376,9 +1376,9 @@ Merge `v3.16.2-prerelease` bugs fix.
   - Add internal `AVR` project template.
 
 **Changed**:
-  - Move eide-binaries folder location to user's home folder.
+  - Move zide-binaries folder location to user's home folder.
   - Remove external-tools default config value for plug-in settings.
-  - Remove 'c_cpp_properties.json' for eide projects.
+  - Remove 'c_cpp_properties.json' for zide projects.
 
 ***
 
@@ -1391,8 +1391,8 @@ Merge `v3.16.2-prerelease` bugs fix.
   - Fix incompatible commandline format when use vscode task.
 
 **Changed**:
-  - Move eide-binaries folder location to user's home folder.
-  - Remove 'c_cpp_properties.json' for eide projects.
+  - Move zide-binaries folder location to user's home folder.
+  - Remove 'c_cpp_properties.json' for zide projects.
 
 ***
 
@@ -1433,7 +1433,7 @@ Merge `v3.16.2-prerelease` bugs fix.
 
 **New Features**:
   - Support modify the source file exclude list directly by temporary yaml config file.
-  - Support new VSCode terminal type: `Eide Msys Bash`.
+  - Support new VSCode terminal type: `Zide Msys Bash`.
   - Support vscode `problem matcher` and `terminal links provider` for `Keil_C51` toolchain.
 
 **Bug Fixes**:
@@ -1462,7 +1462,7 @@ Merge `v3.16.2-prerelease` bugs fix.
 
 **New Features**:
   - Built-in MSYS environment. For `builder user task` and `shell flash command` is very useful.
-  - Support auto run `pre-install.sh / post-install.sh` when install a project from template. (please place `*-install.sh` in the `.eide` folder)
+  - Support auto run `pre-install.sh / post-install.sh` when install a project from template. (please place `*-install.sh` in the `.zide` folder)
   - Auto check project template hash before install it. 
   - Support automatically read and load PyOCD chip list.
 
@@ -1498,7 +1498,7 @@ Merge `v3.16.2-prerelease` bugs fix.
 
 **New Features**:
   - Support `any-gcc` project and `any-gcc` toolchain. Used to support any gcc family compilers.
-  - Support auto update eide-binaries
+  - Support auto update zide-binaries
   - Support `BigEndian` options for `armcc/armclang`
   - Support access to **private** template repo that need to provide `Github Personal Access Token` in plug-in Settings 
 
@@ -1506,7 +1506,7 @@ Merge `v3.16.2-prerelease` bugs fix.
   - Failed to jump definition. Not provide browsePath for the workspace causes the C/C ++ **Go To Definition** functionality is fail to jump to source files in the workspace
 
 **Optimized**:
-  - Allow user add custom forceIncludeFile for c/c++ intellisense. Go to eide plug-in settings to set it.
+  - Allow user add custom forceIncludeFile for c/c++ intellisense. Go to zide plug-in settings to set it.
   - Align inline input box for `builder options ui`.
 
 ***
@@ -1524,7 +1524,7 @@ Merge `v3.16.2-prerelease` bugs fix.
   - English README are preferred.
   - Use CustomConfigurationProvider provide Intellisence information for `C/C++`, no longer use `c_cpp_properties. Json`.
   - Use unify `env.ini` file for each target in a project. Instead of creating a separate '\<taregt\>.env.ini' file for each target. (**so the old env configuration will be invalid**)
-  - In the `env.ini` file, the `"workspace.order"` variable will be **invalid**, please use the `"EIDE_BUILD_ORDER"` variable instead. [docs](https://docs.em-ide.com/#/zh-cn/multi_prj_workspace?id=%e6%9e%84%e5%bb%ba%e4%bc%98%e5%85%88%e7%ba%a7)
+  - In the `env.ini` file, the `"workspace.order"` variable will be **invalid**, please use the `"ZIDE_BUILD_ORDER"` variable instead. [docs](https://docs.em-ide.com/#/zh-cn/multi_prj_workspace?id=%e6%9e%84%e5%bb%ba%e4%bc%98%e5%85%88%e7%ba%a7)
 
 **Optimized**:
   - Better build output rendering for `keil_c51, iar_stm8` toolchain
@@ -1553,7 +1553,7 @@ Merge `v3.16.2-prerelease` bugs fix.
 - 优化：当源文件不在当前工作区时，向 C/C++ 插件提供源文件的搜索目录
 - 优化：打开文件选取对话框时，设置初始路径为项目根目录
 - 优化：在使用 Importer 导入多 Target 项目时，使用 \<prjName>+\<targetName> 作为 id，区分列表项
-- 优化：优化下载 eide-binaries 时的站点选择
+- 优化：优化下载 zide-binaries 时的站点选择
 - 优化：若某些烧录器不支持 `Erase Chip`，则忽略该命令
 ***
 
@@ -1569,7 +1569,7 @@ Merge `v3.16.2-prerelease` bugs fix.
 - 新增：鼠标悬停显示文件,文件夹数量（仅虚拟文件夹）
 - 新增：支持通过编写外部 js 脚本来导入其他IDE项目文件中的文件树，宏，头文件等信息（方便导入 `SEGGER Embedded Studio`，`IAR For ARM` 等其他任意 IDE 的项目），[文档](https://docs.em-ide.com/#/zh-cn/project_manager?id=从其他-ide-项目导入源文件资源)
 - 新增：在输出目录生成 .map.view 文件，打开即可显示 map 文件的资源统计视图（仅支持ARMCC/GCC工程），[文档](https://docs.em-ide.com/#/zh-cn/utility_functions?id=查看程序资源视图)
-- 新增：支持在线下载安装 Keil 芯片支持包，默认远程仓库地址：https://github.com/github0null/eide-cmsis-pack
+- 新增：支持在线下载安装 Keil 芯片支持包，默认远程仓库地址：https://github.com/github0null/zide-cmsis-pack
 - 修复：CMSIS Config Wizard 在解析不符合要求的字符串类型时，出现误判
 - 修复：删除 CMSIS 包之后，相应的 MCU 预定义宏被删除
 - **更改：调整某些配置的显示名称**，如 **项目依赖** 更改为 **项目属性**
@@ -1602,13 +1602,13 @@ Merge `v3.16.2-prerelease` bugs fix.
 ***
 
 ### [v2.12.3]
-- 新增：增加一条命令 `eide.reinstall.binaries`，允许重新安装 eide-binaries
+- 新增：增加一条命令 `zide.reinstall.binaries`，允许重新安装 zide-binaries
 - 优化：支持自动读取 JLink 内部 Device 列表，以及加载 JLink 安装目录下的 'JLinkDevices.xml'
 - 优化：使用扩展推荐，取消原来的扩展包绑定，将自动附加扩展推荐到项目工作区（在工作内打开 **扩展** -> **推荐** 即可查看）
 - 优化：允许向虚拟文件夹添加 c/c++ 头文件
 - 优化：优化构建器选项 UI (使用 element UI 代替部分 boostrap 组件)
 - 支持 sdcc 编译 .asm 汇编文件
-- 优化：为 STLink 下载方式兼容 STM32CubeProgramer 下载器，将默认 stlink 下载器安装包修改为 [st_cube_programer.7z](https://github.com/github0null/eide-resource/blob/master/packages/st_cube_programer.7z)
+- 优化：为 STLink 下载方式兼容 STM32CubeProgramer 下载器，将默认 stlink 下载器安装包修改为 [st_cube_programer.7z](https://github.com/github0null/zide-resource/blob/master/packages/st_cube_programer.7z)
 ***
 
 ### [v2.12.1]
@@ -1616,7 +1616,7 @@ Merge `v3.16.2-prerelease` bugs fix.
 - 修复：打开构建器选项时，偶尔无法正常显示 UI
 - 更改：在项目加载时保留无效的包含路径，库目录
 - 优化：在使用多项目工作区时，将默认的构建优先级改为 100
-- 优化：下载安装 eide binaries 时，优化站点选择
+- 优化：下载安装 zide binaries 时，优化站点选择
 - 优化：导入 MDK 项目时，优化 RTE 组件的导入
 ***
 
@@ -1626,7 +1626,7 @@ Merge `v3.16.2-prerelease` bugs fix.
 - 修复：修复 cmsis pack 解析问题：https://discuss.em-ide.com/d/87
 - 更改：将 cmsis pack 的默认安装位置改为：`.pack`, cmsis header 的安装位置改为：`.cmsis`
 - 更改：将扩展改为扩展包，一并安装其他实用性扩展
-- 更改：将插件改为在线安装，缩小 vsix 安装包大小，离线版下载位置：https://github.com/github0null/eide/releases
+- 更改：将插件改为在线安装，缩小 vsix 安装包大小，离线版下载位置：https://github.com/github0null/zide/releases
 - 优化：能够自动在环境变量中获取 Keil 的安装位置，Keil 环境变量：`Keil_Root`
 - 优化：增强 MDK 项目的导入功能，自动导入 MDK 项目中的包组件，增加组件缺失时的提示功能；导入成功后，组件存放位置：`.cmsis`
 - 优化：优化构建器选项的 UI，适应 vscode 语言配置
@@ -1639,12 +1639,12 @@ Merge `v3.16.2-prerelease` bugs fix.
 - 新增：支持多项目工作区的构建，具体细节见文档：https://docs.em-ide.com/#/zh-cn/multi_prj_workspace
 - 新增：支持 GCC 可执行文件的大小显示和占用比（要显示占用比，须在项目环境变量中设置芯片大小信息）
 - 优化：优化构建输出显示
-- 更改：默认 eide 模板后缀改为 `ept`, 多项目工作区模板后缀为 `ewt`
+- 更改：默认 zide 模板后缀改为 `ept`, 多项目工作区模板后缀为 `ewt`
 ***
 
 ### [v2.10.2]
 - 修复：串口监视器无法打开，找不到可执行文件位置
-- 优化：执行终端任务时附加 eide 的可执行程序目录到环境变量
+- 优化：执行终端任务时附加 zide 的可执行程序目录到环境变量
 ***
 
 ### [v2.10.1]
@@ -1655,8 +1655,8 @@ Merge `v3.16.2-prerelease` bugs fix.
 
 ### [v2.10.0]
 - **新增：支持使用 cppcheck 对项目进行静态检查**
-- 优化：优化 eide.json 的结构, 删除不必要的信息
-- 更改：调整在线安装工具时工具的安装目录，更改至：`<用户根目录>/.eide/tools`
+- 优化：优化 zide.json 的结构, 删除不必要的信息
+- 更改：调整在线安装工具时工具的安装目录，更改至：`<用户根目录>/.zide/tools`
 ***
 
 ### [v2.9.1]
@@ -1665,7 +1665,7 @@ Merge `v3.16.2-prerelease` bugs fix.
 
 ### [v2.9.0]
 - **更改：使用内置的 Mono 运行时代替 .NetFramework 运行时**
-- 更改：eide 默认模板仓库转移至 https://github.com/github0null/eide-resource
+- 更改：zide 默认模板仓库转移至 https://github.com/github0null/zide-resource
 - 新增：支持在线安装缺失的工具
 - 新增：对某个源文件查看反汇编（仅支持 GCC 系列）
 ***
@@ -1673,7 +1673,7 @@ Merge `v3.16.2-prerelease` bugs fix.
 ### [v2.8.1]
 - **更改：调整某些插件设置的命名（旧的设置将会失效）**
 - 更改：调整 **工具链设置** 图标的显示状态
-- 新增：新增插件设置项 `EIDE.JLink.DeviceXmlPath`，用于设置 JLink 芯片支持列表
+- 新增：新增插件设置项 `ZIDE.JLink.DeviceXmlPath`，用于设置 JLink 芯片支持列表
 - 修复：连接远程仓库超时，但连接未能关闭
 - 优化：添加源文件时根据文件后缀进行过滤
 - 优化：调整 Makefile 模板的获取方式
@@ -1836,7 +1836,7 @@ Merge `v3.16.2-prerelease` bugs fix.
 - 新增：允许通过自定义shell命令下载程序
 - 修复：解析 GD32 keil 包时出现的问题
 - 调整：调整功能按钮；移除多余的按钮，将其放到右键菜单
-- 优化：压缩配置, 移除无用的 eide 项目配置
+- 优化：压缩配置, 移除无用的 zide 项目配置
 ***
 
 ### [v1.21.4]
@@ -1854,7 +1854,7 @@ Merge `v3.16.2-prerelease` bugs fix.
 ### [v1.21.2]
 - 新增：添加新设置，允许设置输出目录名称
 - 更改：允许添加多个链接脚本
-- 更改：将 EIDE.json 重命名为 eide.json
+- 更改：将 ZIDE.json 重命名为 zide.json
 - 优化：模板视图支持嵌套显示
 ***
 
@@ -1872,7 +1872,7 @@ Merge `v3.16.2-prerelease` bugs fix.
 ***
 
 ### [v1.20.2]
-- 调整：将依赖项目录 deps 移动到 .eide
+- 调整：将依赖项目录 deps 移动到 .zide
 - 调整：builder 的日志格式
 ***
 
@@ -1950,7 +1950,7 @@ Merge `v3.16.2-prerelease` bugs fix.
 ### [v1.17.1]
 - 修复：文件夹变化过快导致的刷新文件夹失败
 - 更改：调整一些默认的编译配置
-- 新增：支持使用 .eideignore 在打包项目时排除某些文件
+- 新增：支持使用 .zideignore 在打包项目时排除某些文件
 ***
 
 ### [v1.17.0]

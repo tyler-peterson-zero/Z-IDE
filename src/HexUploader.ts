@@ -22,7 +22,7 @@
 	SOFTWARE.
 */
 
-import { AbstractProject } from "./EIDEProject";
+import { AbstractProject } from "./ZIDEProject";
 import { ResManager } from "./ResManager";
 import { File } from "../lib/node-utility/File";
 import { GlobalEvent } from "./GlobalEvents";
@@ -352,7 +352,7 @@ export abstract class HexUploader<InvokeParamsType> {
         } else {
             const silent = SettingManager.instance().isSilentBuildOrFlash();
             const etask = await sendCommandToTerminal(title, commandLine, {
-                source: 'eide.flasher',
+                source: 'zide.flasher',
                 env: env,
                 useTerminal: useTerminal,
                 cwd: cwd,
@@ -426,8 +426,8 @@ class JLinkUploader extends HexUploader<any> {
         const files = this.parseProgramFiles(option);
 
         // jlink cmd template
-        let jlinkCommandtemplate: string = '${EIDE_JLINK_FLASHER_CMD}';
-        const tFile = File.fromArray([this.project.getEideDir().path, 'jlink.flasher.cmd.template']);
+        let jlinkCommandtemplate: string = '${ZIDE_JLINK_FLASHER_CMD}';
+        const tFile = File.fromArray([this.project.getZideDir().path, 'jlink.flasher.cmd.template']);
         if (tFile.IsFile()) {
             jlinkCommandtemplate = tFile.Read();
         }
@@ -472,7 +472,7 @@ class JLinkUploader extends HexUploader<any> {
         }
 
         // replace vars
-        jlinkCommandtemplate = jlinkCommandtemplate.replace(/\$\{EIDE_JLINK_FLASHER_CMD\}/g, flasherCmds.join(os.EOL));
+        jlinkCommandtemplate = jlinkCommandtemplate.replace(/\$\{ZIDE_JLINK_FLASHER_CMD\}/g, flasherCmds.join(os.EOL));
         jlinkCommandtemplate = this.resolveHexFilePathEnvs(jlinkCommandtemplate, files);
         jlinkCommandtemplate = this.project.resolveEnvVar(jlinkCommandtemplate);
         jlinkCommandtemplate = jlinkCommandtemplate + os.EOL + 'exit'; // append 'exit' command
@@ -978,8 +978,8 @@ class STVPHexUploader extends HexUploader<string[]> {
             const stvpDir = NodePath.dirname(SettingManager.GetInstance().getStvpExePath());
             const cli = `bash "./stm8_erase.sh"`;
             const envs = process.env;
-            envs['EIDE_STM8_CPU'] = options.deviceName;
-            envs['EIDE_DAT_ROOT'] = datDir.path;
+            envs['ZIDE_STM8_CPU'] = options.deviceName;
+            envs['ZIDE_DAT_ROOT'] = datDir.path;
             prependToSysEnv(envs, [stvpDir, ResManager.GetInstance().getStvpToolsDir().path]);
             return this.executeShellCommand(this.toolType, cli, envs, undefined, datDir.path);
         }

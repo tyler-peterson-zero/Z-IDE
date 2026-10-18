@@ -8,7 +8,7 @@ import {
     ClientCapabilities, ServerCapabilities, RegistrationType, RegistrationData,
     DocumentSelector, FeatureState
 } from 'vscode-languageclient';
-import { AbstractProject } from './EIDEProject';
+import { AbstractProject } from './ZIDEProject';
 import { SettingManager } from './SettingManager';
 import { GlobalEvent } from './GlobalEvents';
 import { File } from '../lib/node-utility/File';
@@ -120,7 +120,7 @@ export async function onRegisterClangdProvider(prj: AbstractProject) {
     prj.on('cppConfigChanged', () => {
 
         if (!SettingManager.instance().isEnableClangdConfigGenerator()) {
-            GlobalEvent.log_info(`ignore update .clangd, because "EIDE.Option.EnableClangdConfigGenerator" is not set`);
+            GlobalEvent.log_info(`ignore update .clangd, because "ZIDE.Option.EnableClangdConfigGenerator" is not set`);
             return;
         }
 

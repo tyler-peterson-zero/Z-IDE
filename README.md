@@ -2,9 +2,9 @@
 
 [![](https://img.shields.io/badge/home_page-em--ide.com-blue)](https://em-ide.com/)
 [![](https://img.shields.io/badge/chat-discuss.em--ide.com-orange)](https://discuss.em-ide.com/)
-[![](https://img.shields.io/visual-studio-marketplace/v/CL.eide)](https://marketplace.visualstudio.com/items?itemName=CL.eide)
-[![](https://img.shields.io/visual-studio-marketplace/i/CL.eide)](https://marketplace.visualstudio.com/items?itemName=CL.eide)
-[![](https://img.shields.io/visual-studio-marketplace/stars/CL.eide)](https://marketplace.visualstudio.com/items?itemName=CL.eide&ssr=false#review-details)
+[![](https://img.shields.io/visual-studio-marketplace/v/CL.zide)](https://marketplace.visualstudio.com/items?itemName=CL.zide)
+[![](https://img.shields.io/visual-studio-marketplace/i/CL.zide)](https://marketplace.visualstudio.com/items?itemName=CL.zide)
+[![](https://img.shields.io/visual-studio-marketplace/stars/CL.zide)](https://marketplace.visualstudio.com/items?itemName=CL.zide&ssr=false#review-details)
 
 ---
 
@@ -87,13 +87,13 @@ Supported Platforms:
 
 ## ChangeLog 📌
 
-[ChangeLog](https://marketplace.visualstudio.com/items/CL.eide/changelog)
+[ChangeLog](https://marketplace.visualstudio.com/items/CL.zide/changelog)
 
 ***
 
 ## Community 🌈
 
-- [Github](https://github.com/github0null/eide/issues)
+- [Github](https://github.com/github0null/zide/issues)
 
 - [Forum https://discuss.em-ide.com](https://discuss.em-ide.com/)
 

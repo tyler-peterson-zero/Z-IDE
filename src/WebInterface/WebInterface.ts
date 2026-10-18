@@ -135,7 +135,7 @@ export interface ShellFlasherIndexItem {
 	platform: string[];
 
 	/**
-	 * eide shell flasher config, refer: src/HexUploader.ts -> CustomFlashOptions
+	 * zide shell flasher config, refer: src/HexUploader.ts -> CustomFlashOptions
 	*/
 	flashConfigTemplate: {
 		bin: string;
@@ -165,7 +165,7 @@ export interface ShellFlasherIndexItem {
 			/**
 			 * if 'locationType' == 'workspace', Install Dir is '${workspaceFolder}/<location>'
 			 * 
-			 * if 'locationType' == 'global', Install Dir is '${userHome}/.eide/tools/<location>'
+			 * if 'locationType' == 'global', Install Dir is '${userHome}/.zide/tools/<location>'
 			*/
 			location: string;
 

@@ -32,7 +32,7 @@ import * as yaml from 'yaml';
 
 import { GlobalEvent } from './GlobalEvents';
 import { OperationExplorer } from './OperationExplorer';
-import { ProjectExplorer, ProjTreeItem } from './EIDEProjectExplorer';
+import { ProjectExplorer, ProjTreeItem } from './ZIDEProjectExplorer';
 import { ResManager } from './ResManager';
 import { LogAnalyzer } from './LogAnalyzer';
 import { ResInstaller } from './ResInstaller';
@@ -99,10 +99,10 @@ export async function activate(context: vscode.ExtensionContext) {
         }
     }
 
-    // init eide components
+    // init zide components
     const done = await InitComponents(context);
     if (!done) {
-        vscode.window.showErrorMessage(`${ERROR} : Install eide binaries failed !, You can download offline [vsix package](https://github.com/github0null/eide/releases) and install it !`);
+        vscode.window.showErrorMessage(`${ERROR} : Install zide binaries failed !, You can download offline [vsix package](https://github.com/github0null/zide/releases) and install it !`);
         return;
     }
 
@@ -110,13 +110,13 @@ export async function activate(context: vscode.ExtensionContext) {
     const subscriptions = context.subscriptions;
 
     // global user commands
-    subscriptions.push(vscode.commands.registerCommand('eide.ShowUUID', () => ShowUUID()));
-    subscriptions.push(vscode.commands.registerCommand('eide.c51ToSdcc', () => c51ToSDCC()));
-    subscriptions.push(vscode.commands.registerCommand('eide.ReloadJlinkDevs', () => reloadJlinkDevices()));
-    subscriptions.push(vscode.commands.registerCommand('eide.ReloadStm8Devs', () => reloadStm8Devices()));
-    subscriptions.push(vscode.commands.registerCommand('eide.create.clang-format.file', () => newClangFormatFile()));
-    subscriptions.push(vscode.commands.registerCommand('eide.cleanCache', () => cleanCache()));
-    subscriptions.push(vscode.commands.registerCommand('eide.refresh.external_tools_index', () => {
+    subscriptions.push(vscode.commands.registerCommand('zide.ShowUUID', () => ShowUUID()));
+    subscriptions.push(vscode.commands.registerCommand('zide.c51ToSdcc', () => c51ToSDCC()));
+    subscriptions.push(vscode.commands.registerCommand('zide.ReloadJlinkDevs', () => reloadJlinkDevices()));
+    subscriptions.push(vscode.commands.registerCommand('zide.ReloadStm8Devs', () => reloadStm8Devices()));
+    subscriptions.push(vscode.commands.registerCommand('zide.create.clang-format.file', () => newClangFormatFile()));
+    subscriptions.push(vscode.commands.registerCommand('zide.cleanCache', () => cleanCache()));
+    subscriptions.push(vscode.commands.registerCommand('zide.refresh.external_tools_index', () => {
         ResInstaller.instance()
             .refreshExternalToolsIndex(true)
             .then(() => GlobalEvent.emit('msg', newMessage('Info', 'Refresh Done.')))
@@ -125,11 +125,11 @@ export async function activate(context: vscode.ExtensionContext) {
                 GlobalEvent.log_show();
             });
     }));
-    subscriptions.push(vscode.commands.registerCommand('eide.debug.start', (item) => {
+    subscriptions.push(vscode.commands.registerCommand('zide.debug.start', (item) => {
         startDebugging(item)
             .catch(err => GlobalEvent.emit('error', err));
     }));
-    subscriptions.push(vscode.commands.registerCommand('eide.debug.start.attach', (item) => {
+    subscriptions.push(vscode.commands.registerCommand('zide.debug.start.attach', (item) => {
         startDebugging(item, true)
             .catch(err => GlobalEvent.emit('error', err));
     }));
@@ -139,142 +139,142 @@ export async function activate(context: vscode.ExtensionContext) {
 
     // operations
     operationExplorer = new OperationExplorer(context);
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.Operation.Open', () => operationExplorer.OnOpenProject()));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.Operation.Create', () => operationExplorer.OnCreateProject()));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.Operation.Import', () => operationExplorer.OnImportProject()));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.Operation.SetToolchainPath', () => operationExplorer.OnSetToolchainPath()));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.Operation.SetupUtilTools', () => operationExplorer.setupUtilTools()));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.Operation.openSettings', () => SettingManager.jumpToSettings('@ext:cl.eide')));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.Operation.onlineHelp', () => utility.openUrl('https://discuss.em-ide.com')));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.Operation.Open', () => operationExplorer.OnOpenProject()));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.Operation.Create', () => operationExplorer.OnCreateProject()));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.Operation.Import', () => operationExplorer.OnImportProject()));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.Operation.SetToolchainPath', () => operationExplorer.OnSetToolchainPath()));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.Operation.SetupUtilTools', () => operationExplorer.setupUtilTools()));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.Operation.openSettings', () => SettingManager.jumpToSettings('@ext:cl.zide')));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.Operation.onlineHelp', () => utility.openUrl('https://discuss.em-ide.com')));
 
     // operations user cmds
-    subscriptions.push(vscode.commands.registerCommand('eide.operation.install_toolchain', () => operationExplorer.OnSetToolchainPath()));
-    subscriptions.push(vscode.commands.registerCommand('eide.operation.import_project', () => operationExplorer.OnImportProject()));
-    subscriptions.push(vscode.commands.registerCommand('eide.operation.new_project', () => operationExplorer.OnCreateProject()));
-    subscriptions.push(vscode.commands.registerCommand('eide.operation.open_project', () => operationExplorer.OnOpenProject()));
+    subscriptions.push(vscode.commands.registerCommand('zide.operation.install_toolchain', () => operationExplorer.OnSetToolchainPath()));
+    subscriptions.push(vscode.commands.registerCommand('zide.operation.import_project', () => operationExplorer.OnImportProject()));
+    subscriptions.push(vscode.commands.registerCommand('zide.operation.new_project', () => operationExplorer.OnCreateProject()));
+    subscriptions.push(vscode.commands.registerCommand('zide.operation.open_project', () => operationExplorer.OnOpenProject()));
 
     // projects
     projectExplorer = new ProjectExplorer(context);
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.workspace.build', () => projectExplorer.buildWorkspace()));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.workspace.rebuild', () => projectExplorer.buildWorkspace(true)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.workspace.open.config', () => projectExplorer.openWorkspaceConfig()));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.workspace.make.template', (item) => projectExplorer.ExportProjectTemplate(undefined, true)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.workspace.build', () => projectExplorer.buildWorkspace()));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.workspace.rebuild', () => projectExplorer.buildWorkspace(true)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.workspace.open.config', () => projectExplorer.openWorkspaceConfig()));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.workspace.make.template', (item) => projectExplorer.ExportProjectTemplate(undefined, true)));
 
     // project user cmds
-    subscriptions.push(vscode.commands.registerCommand('eide.project.save', (item) => projectExplorer.saveProject(item)));
-    subscriptions.push(vscode.commands.registerCommand('eide.project.rebuild', (item) => projectExplorer.buildProject(projectExplorer.getProjectByTreeItem(item))));
-    subscriptions.push(vscode.commands.registerCommand('eide.project.build', (item) => projectExplorer.buildProject(projectExplorer.getProjectByTreeItem(item), { notRebuild: true })));
-    subscriptions.push(vscode.commands.registerCommand('eide.project.clean', (item) => projectExplorer.cleanProject(projectExplorer.getProjectByTreeItem(item))));
-    subscriptions.push(vscode.commands.registerCommand('eide.project.uploadToDevice', (item) => projectExplorer.programFlashProject(projectExplorer.getProjectByTreeItem(item))));
-    subscriptions.push(vscode.commands.registerCommand('eide.reinstall.binaries', () => checkAndInstallBinaries(true)));
-    subscriptions.push(vscode.commands.registerCommand('eide.project.flash.erase.all', (item) => projectExplorer.programFlashProject(projectExplorer.getProjectByTreeItem(item), true)));
-    subscriptions.push(vscode.commands.registerCommand('eide.project.buildAndFlash', (item) => projectExplorer.buildProject(projectExplorer.getProjectByTreeItem(item), { notRebuild: true, flashAfterBuild: true })));
-    subscriptions.push(vscode.commands.registerCommand('eide.project.genBuilderParams', (item) => projectExplorer.buildProject(projectExplorer.getProjectByTreeItem(item), { notRebuild: true, onlyDumpBuilderParams: true })));
-    subscriptions.push(vscode.commands.registerCommand('eide.open.makelibs.cfg', (item) => projectExplorer.openLibsGeneratorConfig(item)));
-    subscriptions.push(vscode.commands.registerCommand('eide.project.create_sys_stubs', (projuid) => projectExplorer.createSysStubs(projuid)));
+    subscriptions.push(vscode.commands.registerCommand('zide.project.save', (item) => projectExplorer.saveProject(item)));
+    subscriptions.push(vscode.commands.registerCommand('zide.project.rebuild', (item) => projectExplorer.buildProject(projectExplorer.getProjectByTreeItem(item))));
+    subscriptions.push(vscode.commands.registerCommand('zide.project.build', (item) => projectExplorer.buildProject(projectExplorer.getProjectByTreeItem(item), { notRebuild: true })));
+    subscriptions.push(vscode.commands.registerCommand('zide.project.clean', (item) => projectExplorer.cleanProject(projectExplorer.getProjectByTreeItem(item))));
+    subscriptions.push(vscode.commands.registerCommand('zide.project.uploadToDevice', (item) => projectExplorer.programFlashProject(projectExplorer.getProjectByTreeItem(item))));
+    subscriptions.push(vscode.commands.registerCommand('zide.reinstall.binaries', () => checkAndInstallBinaries(true)));
+    subscriptions.push(vscode.commands.registerCommand('zide.project.flash.erase.all', (item) => projectExplorer.programFlashProject(projectExplorer.getProjectByTreeItem(item), true)));
+    subscriptions.push(vscode.commands.registerCommand('zide.project.buildAndFlash', (item) => projectExplorer.buildProject(projectExplorer.getProjectByTreeItem(item), { notRebuild: true, flashAfterBuild: true })));
+    subscriptions.push(vscode.commands.registerCommand('zide.project.genBuilderParams', (item) => projectExplorer.buildProject(projectExplorer.getProjectByTreeItem(item), { notRebuild: true, onlyDumpBuilderParams: true })));
+    subscriptions.push(vscode.commands.registerCommand('zide.open.makelibs.cfg', (item) => projectExplorer.openLibsGeneratorConfig(item)));
+    subscriptions.push(vscode.commands.registerCommand('zide.project.create_sys_stubs', (projuid) => projectExplorer.createSysStubs(projuid)));
 
     // operations bar
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.historyRecord', () => projectExplorer.openHistoryRecords()));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.clearHistoryRecord', () => projectExplorer.clearAllHistoryRecords()));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.historyRecord', () => projectExplorer.openHistoryRecords()));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.clearHistoryRecord', () => projectExplorer.clearAllHistoryRecords()));
 
     // project
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.showBuildParams', (item) => projectExplorer.buildProject(projectExplorer.getProjectByTreeItem(item), { onlyDumpCompilerInfo: true })));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.setActive', (item) => projectExplorer.setActiveProject(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.close', (item) => projectExplorer.Close(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.saveAll', () => projectExplorer.SaveAll()));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.refresh', () => projectExplorer.Refresh()));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.switchMode', (item) => projectExplorer.switchTarget(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.exportAsTemplate', (item) => projectExplorer.ExportProjectTemplate(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.exportXml', (item) => projectExplorer.ExportKeilXml(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.exportMakefile', (item) => projectExplorer.ExportMakefile(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.show_proj_vars', (item) => projectExplorer.ShowProjectVariables(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.showBuildParams', (item) => projectExplorer.buildProject(projectExplorer.getProjectByTreeItem(item), { onlyDumpCompilerInfo: true })));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.setActive', (item) => projectExplorer.setActiveProject(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.close', (item) => projectExplorer.Close(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.saveAll', () => projectExplorer.SaveAll()));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.refresh', () => projectExplorer.Refresh()));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.switchMode', (item) => projectExplorer.switchTarget(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.exportAsTemplate', (item) => projectExplorer.ExportProjectTemplate(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.exportXml', (item) => projectExplorer.ExportKeilXml(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.exportMakefile', (item) => projectExplorer.ExportMakefile(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.show_proj_vars', (item) => projectExplorer.ShowProjectVariables(item)));
 
     // project explorer
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.addSrcDir', (item) => projectExplorer.AddSrcDir(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.removeSrcDir', (item) => projectExplorer.RemoveSrcDir(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.sourceRoot.refresh', (item) => projectExplorer.refreshSrcRoot(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.modify.files.options', (item) => projectExplorer.showFilesOptions(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.import.ext.source.struct', (item) => projectExplorer.ImportSourceFromExtProject(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.source.modify.exclude_list', (item) => projectExplorer.openYamlConfig(item, 'src-exc-cfg')));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.addSrcDir', (item) => projectExplorer.AddSrcDir(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.removeSrcDir', (item) => projectExplorer.RemoveSrcDir(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.sourceRoot.refresh', (item) => projectExplorer.refreshSrcRoot(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.modify.files.options', (item) => projectExplorer.showFilesOptions(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.import.ext.source.struct', (item) => projectExplorer.ImportSourceFromExtProject(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.source.modify.exclude_list', (item) => projectExplorer.openYamlConfig(item, 'src-exc-cfg')));
 
     // filesystem files
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.source.filesystem_folder_add_file', (item) => projectExplorer.fs_folderAddFile(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.source.filesystem_folder_add', (item) => projectExplorer.fs_folderAdd(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.source.filesystem_folder_add_file', (item) => projectExplorer.fs_folderAddFile(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.source.filesystem_folder_add', (item) => projectExplorer.fs_folderAdd(item)));
 
     // virtual files
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.source.virtual_folder_add_file', (item) => projectExplorer.Virtual_folderAddFile(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.source.virtual_folder_add', (item) => projectExplorer.Virtual_folderAdd(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.source.virtual_folder_remove', (item, items) => projectExplorer.Virtual_removeFolder(item, items)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.source.virtual_folder_rename', (item) => projectExplorer.Virtual_renameFolder(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.source.virtual_file_remove', (item, items) => projectExplorer.Virtual_removeFile(item, items)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.source.virtual_folder_add_file', (item) => projectExplorer.Virtual_folderAddFile(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.source.virtual_folder_add', (item) => projectExplorer.Virtual_folderAdd(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.source.virtual_folder_remove', (item, items) => projectExplorer.Virtual_removeFolder(item, items)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.source.virtual_folder_rename', (item) => projectExplorer.Virtual_renameFolder(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.source.virtual_file_remove', (item, items) => projectExplorer.Virtual_removeFile(item, items)));
 
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.source.file.modify.extraArgs', (item) => projectExplorer.modifyExtraCompilerArgs('file', item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.source.file.compile', (item) => projectExplorer.compileSingleFile(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.source.folder.modify.extraArgs', (item) => projectExplorer.modifyExtraCompilerArgs('folder', item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.source.copyPath', (item) => projectExplorer.copyPath('abs', item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.source.copyRelativePath', (item) => projectExplorer.copyPath('relative', item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.source.file.modify.extraArgs', (item) => projectExplorer.modifyExtraCompilerArgs('file', item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.source.file.compile', (item) => projectExplorer.compileSingleFile(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.source.folder.modify.extraArgs', (item) => projectExplorer.modifyExtraCompilerArgs('folder', item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.source.copyPath', (item) => projectExplorer.copyPath('abs', item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.source.copyRelativePath', (item) => projectExplorer.copyPath('relative', item)));
 
     // file other operations
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.excludeSource', (item, items) => projectExplorer.ExcludeSourceFile(item, items)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.unexcludeSource', (item, items) => projectExplorer.UnexcludeSourceFile(item, items)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.excludeFolder', (item, items) => projectExplorer.ExcludeFolder(item, items, false)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.unexcludeFolder', (item, items) => projectExplorer.UnexcludeFolder(item, items, false)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.excludeFolder.childSrcs', (item, items) => projectExplorer.ExcludeFolder(item, items, true)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.unexcludeFolder.childSrcs', (item, items) => projectExplorer.UnexcludeFolder(item, items, true)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.source.file.show.dir', (item) => projectExplorer.showFileInExplorer(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.source.modify.path', (item) => projectExplorer.openYamlConfig(item, 'src-path-cfg')));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.excludeSource', (item, items) => projectExplorer.ExcludeSourceFile(item, items)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.unexcludeSource', (item, items) => projectExplorer.UnexcludeSourceFile(item, items)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.excludeFolder', (item, items) => projectExplorer.ExcludeFolder(item, items, false)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.unexcludeFolder', (item, items) => projectExplorer.UnexcludeFolder(item, items, false)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.excludeFolder.childSrcs', (item, items) => projectExplorer.ExcludeFolder(item, items, true)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.unexcludeFolder.childSrcs', (item, items) => projectExplorer.UnexcludeFolder(item, items, true)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.source.file.show.dir', (item) => projectExplorer.showFileInExplorer(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.source.modify.path', (item) => projectExplorer.openYamlConfig(item, 'src-path-cfg')));
 
     // package
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.removePackage', (item) => projectExplorer.UninstallKeilPackage(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.addPackage', (item) => projectExplorer.InstallKeilPackage(item.val.projectIndex)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.setDevice', (item) => projectExplorer.SetDevice(item.val.projectIndex)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.removePackage', (item) => projectExplorer.UninstallKeilPackage(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.addPackage', (item) => projectExplorer.InstallKeilPackage(item.val.projectIndex)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.setDevice', (item) => projectExplorer.SetDevice(item.val.projectIndex)));
     // - cmsis core packages
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.installCMSISHeaders', (item) => projectExplorer.installCmsisSourcePack(item, 'header')));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.installCmsisLibs', (item) => projectExplorer.installCmsisSourcePack(item, 'lib')));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.installCmsisDriverInterface', (item) => projectExplorer.installCmsisSourcePack(item, 'idrv')));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.installCMSISHeaders', (item) => projectExplorer.installCmsisSourcePack(item, 'header')));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.installCmsisLibs', (item) => projectExplorer.installCmsisSourcePack(item, 'lib')));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.installCmsisDriverInterface', (item) => projectExplorer.installCmsisSourcePack(item, 'idrv')));
 
     // builder
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.modifyCompileConfig', (item) => projectExplorer.ModifyCompileConfig(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.modifyCompileConfig.openFile', (item) => projectExplorer.ModifyCompileConfig_openFile(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.switchToolchain', (item) => projectExplorer.onSwitchCompileTools(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.setupToolchain', (item) => projectExplorer.onSetupToolchain(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.modifyCompileConfig', (item) => projectExplorer.ModifyCompileConfig(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.modifyCompileConfig.openFile', (item) => projectExplorer.ModifyCompileConfig_openFile(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.switchToolchain', (item) => projectExplorer.onSwitchCompileTools(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.setupToolchain', (item) => projectExplorer.onSetupToolchain(item)));
 
     // flasher
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.modifyUploadConfig', (item) => projectExplorer.ModifyUploadConfig(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.switchUploader', (item) => projectExplorer.switchUploader(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.fetchShellFlasher', (item) => projectExplorer.fetchShellFlasher(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.modifyUploadConfig', (item) => projectExplorer.ModifyUploadConfig(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.switchUploader', (item) => projectExplorer.switchUploader(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.fetchShellFlasher', (item) => projectExplorer.fetchShellFlasher(item)));
 
     // debug cfg gen
     subscriptions.push(vscode.commands.registerCommand(
-        '_cl.eide.project.genDebugConfigTemplate.jlink', (item) => projectExplorer.genDebugConfigTemplate(item, 'jlink')));
+        '_cl.zide.project.genDebugConfigTemplate.jlink', (item) => projectExplorer.genDebugConfigTemplate(item, 'jlink')));
     subscriptions.push(vscode.commands.registerCommand(
-        '_cl.eide.project.genDebugConfigTemplate.openocd', (item) => projectExplorer.genDebugConfigTemplate(item, 'openocd')));
+        '_cl.zide.project.genDebugConfigTemplate.openocd', (item) => projectExplorer.genDebugConfigTemplate(item, 'openocd')));
     subscriptions.push(vscode.commands.registerCommand(
-        '_cl.eide.project.genDebugConfigTemplate.pyocd', (item) => projectExplorer.genDebugConfigTemplate(item, 'pyocd')));
+        '_cl.zide.project.genDebugConfigTemplate.pyocd', (item) => projectExplorer.genDebugConfigTemplate(item, 'pyocd')));
 
     // project deps
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.addIncludeDir', (item) => projectExplorer.AddIncludeDir(item.val.projectIndex)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.addDefine', (item) => projectExplorer.AddDefine(item.val.projectIndex)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.addLibDir', (item) => projectExplorer.AddLibDir(item.val.projectIndex)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.showIncludeDir', (item) => projectExplorer.showIncludeDir(item.val.projectIndex)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.showDefine', (item) => projectExplorer.showDefine(item.val.projectIndex)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.showLibDir', (item) => projectExplorer.showLibDir(item.val.projectIndex)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.modifyOtherSettings', (item) => projectExplorer.ModifyOtherSettings(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.modify.deps', (item) => projectExplorer.openYamlConfig(item, 'prj-attr-cfg')));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.editDependenceItem', (item) => projectExplorer.editDependenceItem(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.removeDependenceItem', (item) => projectExplorer.RemoveDependenceItem(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.importDependenceFromPack', (item) => projectExplorer.ImportPackageDependence(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.removeDependenceFromPack', (item) => projectExplorer.RemovePackageDependence(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.addIncludeDir', (item) => projectExplorer.AddIncludeDir(item.val.projectIndex)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.addDefine', (item) => projectExplorer.AddDefine(item.val.projectIndex)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.addLibDir', (item) => projectExplorer.AddLibDir(item.val.projectIndex)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.showIncludeDir', (item) => projectExplorer.showIncludeDir(item.val.projectIndex)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.showDefine', (item) => projectExplorer.showDefine(item.val.projectIndex)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.showLibDir', (item) => projectExplorer.showLibDir(item.val.projectIndex)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.modifyOtherSettings', (item) => projectExplorer.ModifyOtherSettings(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.modify.deps', (item) => projectExplorer.openYamlConfig(item, 'prj-attr-cfg')));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.editDependenceItem', (item) => projectExplorer.editDependenceItem(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.removeDependenceItem', (item) => projectExplorer.RemoveDependenceItem(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.importDependenceFromPack', (item) => projectExplorer.ImportPackageDependence(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.removeDependenceFromPack', (item) => projectExplorer.RemovePackageDependence(item)));
 
     // tree view global
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.copyItemValue', (item) => projectExplorer.CopyItemValue(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.copyItemValue', (item) => projectExplorer.CopyItemValue(item)));
 
     // other project tools
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.source.show_disassembly', (url) => projectExplorer.showDisassembly(url)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.source.show_cmsis_config_wizard', (url) => projectExplorer.showCmsisConfigWizard(url)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.static-check.cppcheck', (item) => projectExplorer.cppcheckProject(item)));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.static-check.clear', (item) => projectExplorer.clearCppcheckDiagnostic()));
-    //subscriptions.push(vscode.commands.registerCommand('_cl.eide.project.cppcheck.check_file', (url) => projectExplorer.cppcheckFile(url)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.source.show_disassembly', (url) => projectExplorer.showDisassembly(url)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.source.show_cmsis_config_wizard', (url) => projectExplorer.showCmsisConfigWizard(url)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.static-check.cppcheck', (item) => projectExplorer.cppcheckProject(item)));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.static-check.clear', (item) => projectExplorer.clearCppcheckDiagnostic()));
+    //subscriptions.push(vscode.commands.registerCommand('_cl.zide.project.cppcheck.check_file', (url) => projectExplorer.cppcheckFile(url)));
 
     operationExplorer.on('request_open_project', (fsPath) => projectExplorer.emit('request_open_project', fsPath));
     operationExplorer.on('request_create_project', (option) => projectExplorer.emit('request_create_project', option));
@@ -282,10 +282,10 @@ export async function activate(context: vscode.ExtensionContext) {
     operationExplorer.on('request_import_project', (option) => projectExplorer.emit('request_import_project', option));
 
     // status bar
-    //subscriptions.push(vscode.commands.registerCommand('_cl.eide.statusbar.switch-project', () => projectExplorer.showQuickPickAndSwitchActiveProject()));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.statusbar.switch-target', () => projectExplorer.switchTarget()));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.statusbar.build', () => projectExplorer.buildProject(projectExplorer.getProjectByTreeItem(), { notRebuild: true })));
-    subscriptions.push(vscode.commands.registerCommand('_cl.eide.statusbar.flash', () => projectExplorer.programFlashProject(projectExplorer.getProjectByTreeItem())));
+    //subscriptions.push(vscode.commands.registerCommand('_cl.zide.statusbar.switch-project', () => projectExplorer.showQuickPickAndSwitchActiveProject()));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.statusbar.switch-target', () => projectExplorer.switchTarget()));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.statusbar.build', () => projectExplorer.buildProject(projectExplorer.getProjectByTreeItem(), { notRebuild: true })));
+    subscriptions.push(vscode.commands.registerCommand('_cl.zide.statusbar.flash', () => projectExplorer.programFlashProject(projectExplorer.getProjectByTreeItem())));
 
     // debug config providers
     vscode.debug.registerDebugConfigurationProvider('cortex-debug', new ExternalDebugConfigProvider('cortex-debug'),
@@ -299,7 +299,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
     // others
     vscode.workspace.registerTextDocumentContentProvider(VirtualDocument.scheme, VirtualDocument.instance());
-    vscode.workspace.registerTaskProvider(EideTaskProvider.TASK_TYPE_BASH, new EideTaskProvider());
+    vscode.workspace.registerTaskProvider(ZideTaskProvider.TASK_TYPE_BASH, new ZideTaskProvider());
     vscode.languages.registerCodeActionsProvider({ scheme: 'file', pattern: '**/compiler.log' }, 
         new CompilerLogCodeActionProvider(), { providedCodeActionKinds: [vscode.CodeActionKind.QuickFix] });
 
@@ -343,7 +343,7 @@ function postLaunchHook(extensionCtx: vscode.ExtensionContext) {
         // only enable github proxy for GMT+8:00 by default
         const timeZone = Math.floor((new Date().getTimezoneOffset() / 60) * -1);
         if (timeZone != 8) {
-            // disable settings: 'EIDE.Repository.UseProxy'
+            // disable settings: 'ZIDE.Repository.UseProxy'
             settingManager.setConfigValue('Repository.UseProxy', false);
         }
     }
@@ -365,7 +365,7 @@ function postLaunchHook(extensionCtx: vscode.ExtensionContext) {
             const msg = view_str$prompt$feedback;
             vscode.window.showInformationMessage(msg, rating_text, sponsor_author_text).then((ans) => {
                 if (ans == rating_text) {
-                    utility.openUrl(`https://marketplace.visualstudio.com/items?itemName=CL.eide&ssr=false#review-details`);
+                    utility.openUrl(`https://marketplace.visualstudio.com/items?itemName=CL.zide&ssr=false#review-details`);
                 }
                 if (ans == sponsor_author_text) {
                     // https://em-ide.com/sponsor
@@ -530,7 +530,7 @@ function cleanCache() {
 }
 
 //////////////////////////////////////////////////
-// eide binaries installer
+// zide binaries installer
 //////////////////////////////////////////////////
 
 function checkBinFolder(binFolder: File): boolean {
@@ -543,11 +543,11 @@ async function checkAndInstallBinaries(forceInstall?: boolean): Promise<boolean>
     const resManager = ResManager.GetInstance();
 
     const binFolder = resManager.getBinDir();
-    const eideCfg = resManager.getAppConfig<any>();
-    const minReqVersion = eideCfg['binary_min_version'];
+    const zideCfg = resManager.getAppConfig<any>();
+    const minReqVersion = zideCfg['binary_min_version'];
 
     // !! for compatibility with offline-package !!
-    // if we found eide binaries in plug-in root folder, move it 
+    // if we found zide binaries in plug-in root folder, move it 
     const builtInBinFolder = File.fromArray([resManager.getAppRootFolder().path, 'bin'])
     if (checkBinFolder(builtInBinFolder)) {
         if (os.platform() == 'win32') {
@@ -559,7 +559,7 @@ async function checkAndInstallBinaries(forceInstall?: boolean): Promise<boolean>
         }
     }
 
-    /* check eide binaries */
+    /* check zide binaries */
 
     // force reinstall
     if (forceInstall) {
@@ -596,7 +596,7 @@ async function checkAndInstallBinaries(forceInstall?: boolean): Promise<boolean>
                     if (done) {
                         resManager.setAppUsrData('LastCheckBinariesUpdateTime', Date.now());
                     } else {
-                        const msg = `Update eide-binaries failed, please restart vscode to try again !`;
+                        const msg = `Update zide-binaries failed, please restart vscode to try again !`;
                         const sel = await vscode.window.showErrorMessage(msg, 'Restart', 'Cancel');
                         if (sel == 'Restart') {
                             vscode.commands.executeCommand('workbench.action.reloadWindow');
@@ -615,7 +615,7 @@ async function checkAndInstallBinaries(forceInstall?: boolean): Promise<boolean>
 
         // export current binaries version
         if (localVersion) {
-            process.env['EIDE_BINARIES_VER'] = localVersion;
+            process.env['ZIDE_BINARIES_VER'] = localVersion;
         }
 
         // clean legacy builder/bin folder
@@ -633,12 +633,12 @@ async function checkAndInstallBinaries(forceInstall?: boolean): Promise<boolean>
 */
 async function tryUpdateBinaries(binFolder: File, localVer?: string): Promise<boolean> {
 
-    const eideCfg = ResManager.GetInstance().getAppConfig<any>();
-    const minReqVersion = eideCfg['binary_min_version'];
+    const zideCfg = ResManager.GetInstance().getAppConfig<any>();
+    const minReqVersion = zideCfg['binary_min_version'];
 
     const getVersionFromRepo = async (): Promise<string | Error | undefined> => {
         try {
-            const url = `https://api.github.com/repos/github0null/eide-resource/contents/binaries/${platform.getRuntimeId()}/VERSION`;
+            const url = `https://api.github.com/repos/github0null/zide-resource/contents/binaries/${platform.getRuntimeId()}/VERSION`;
             const cont = await utility.requestTxt(utility.redirectHost(url));
             if (typeof cont != 'string') return cont;
             let obj: any = undefined;
@@ -652,7 +652,7 @@ async function tryUpdateBinaries(binFolder: File, localVer?: string): Promise<bo
 
     const getAvailableBinariesVersions = async (): Promise<string[] | Error | undefined> => {
         try {
-            const url = `https://api.github.com/repos/github0null/eide-resource/contents/binaries/${platform.getRuntimeId()}`;
+            const url = `https://api.github.com/repos/github0null/zide-resource/contents/binaries/${platform.getRuntimeId()}`;
             const fList = await utility.readGithubRepoFolder(utility.redirectHost(url));
             if (fList instanceof Error) throw fList;
             return fList.filter(f => f.name.startsWith('bin-'))
@@ -717,7 +717,7 @@ async function tryUpdateBinaries(binFolder: File, localVer?: string): Promise<bo
     if (checkBinFolder(binFolder) && preinstallVersion) {
         //TODO
         // if (!notConfirm) {
-        //     const msg = `New update for eide binaries, version: '${preinstallVersion}', [ChangeLog](https://github.com/github0null/eide-resource/pulls?q=is%3Apr+is%3Aclosed), install now ?`;
+        //     const msg = `New update for zide binaries, version: '${preinstallVersion}', [ChangeLog](https://github.com/github0null/zide-resource/pulls?q=is%3Apr+is%3Aclosed), install now ?`;
         //     const sel = await vscode.window.showInformationMessage(msg, 'Yes', 'Later');
         //     if (sel != 'Yes') { return true; } // user canceled
         // }
@@ -733,8 +733,8 @@ async function tryInstallBinaries(binFolder: File, binVersion: string): Promise<
 
     // binaries download site
     let downloadSites: string[] = [
-        `https://raw-github.em-ide.com/github0null/eide-resource/master/binaries/${platform.getRuntimeId()}/bin-${binVersion}.${binType}`,
-        `https://raw.githubusercontent.com/github0null/eide-resource/master/binaries/${platform.getRuntimeId()}/bin-${binVersion}.${binType}`
+        `https://raw-github.em-ide.com/github0null/zide-resource/master/binaries/${platform.getRuntimeId()}/bin-${binVersion}.${binType}`,
+        `https://raw.githubusercontent.com/github0null/zide-resource/master/binaries/${platform.getRuntimeId()}/bin-${binVersion}.${binType}`
     ];
 
     // random order
@@ -747,11 +747,11 @@ async function tryInstallBinaries(binFolder: File, binVersion: string): Promise<
     let installedDone = false;
 
     try {
-        const tmpFile = File.fromArray([os.tmpdir(), `eide-binaries-${binVersion}.${binType}`]);
+        const tmpFile = File.fromArray([os.tmpdir(), `zide-binaries-${binVersion}.${binType}`]);
 
         const done = await vscode.window.withProgress({
             location: vscode.ProgressLocation.Notification,
-            title: 'Downloading eide binaries',
+            title: 'Downloading zide binaries',
             cancellable: false
         }, async (progress, token): Promise<boolean> => {
 
@@ -781,7 +781,7 @@ async function tryInstallBinaries(binFolder: File, binVersion: string): Promise<
 
             installedDone = await vscode.window.withProgress({
                 location: vscode.ProgressLocation.Notification,
-                title: `Installing eide binaries`,
+                title: `Installing zide binaries`,
                 cancellable: false
             }, async (progress, __): Promise<boolean> => {
 
@@ -814,7 +814,7 @@ async function tryInstallBinaries(binFolder: File, binVersion: string): Promise<
                     })
                         // unzip done
                         .on('end', () => {
-                            progress.report({ message: `Install eide binaries done !` });
+                            progress.report({ message: `Install zide binaries done !` });
                             setTimeout(() => resolveIf(true), 500);
                         })
 
@@ -922,20 +922,20 @@ function exportEnvToSysPath(context?: vscode.ExtensionContext) {
     const resManager = ResManager.GetInstance();
     const legacyBuilderDir = resManager.getLegacyBuilderDir();
 
-    // export some eide binaries path to system env path
+    // export some zide binaries path to system env path
     const prependSystemPaths: string[] = [
         File.normalize(`${resManager.getUnifyBuilderExe().dir}`),
-        File.normalize(`${legacyBuilderDir.path}/utils`),  // C:\Users\<USER-NAME>\.eide\bin\builder\utils
-        File.normalize(`${legacyBuilderDir.dir}/scripts`), // C:\Users\<USER-NAME>\.eide\bin\scripts
+        File.normalize(`${legacyBuilderDir.path}/utils`),  // C:\Users\<USER-NAME>\.zide\bin\builder\utils
+        File.normalize(`${legacyBuilderDir.dir}/scripts`), // C:\Users\<USER-NAME>\.zide\bin\scripts
         File.normalize(`${resManager.Get7zDir().path}`),   // builtin 7za tool
         File.normalize(`${resManager.getBuiltInToolsDir().path}/utils`) // builtin util tools
     ];
 
-    // create ~/.eide/tools dir
-    const eideToolsFolder = new File(File.normalize(`${platform.userhome()}/.eide/tools`));
-    if (!eideToolsFolder.IsDir()) {
+    // create ~/.zide/tools dir
+    const zideToolsFolder = new File(File.normalize(`${platform.userhome()}/.zide/tools`));
+    if (!zideToolsFolder.IsDir()) {
         try {
-            new File(eideToolsFolder.path).CreateDir(true);
+            new File(zideToolsFolder.path).CreateDir(true);
         } catch (error) {
             // nothing todo
         }
@@ -946,9 +946,9 @@ function exportEnvToSysPath(context?: vscode.ExtensionContext) {
 
     // try to export some user setted tools path to env
     [
-        { key: 'EIDE_TOOL_GCC_ARM', path: `${settingManager.getGCCDir().path}${File.sep}bin` },
-        { key: 'EIDE_TOOL_JLINK', path: `${settingManager.getJlinkDir()}` },
-        { key: 'EIDE_TOOL_OPENOCD', path: `${NodePath.dirname(settingManager.getOpenOCDExePath())}` }
+        { key: 'ZIDE_TOOL_GCC_ARM', path: `${settingManager.getGCCDir().path}${File.sep}bin` },
+        { key: 'ZIDE_TOOL_JLINK', path: `${settingManager.getJlinkDir()}` },
+        { key: 'ZIDE_TOOL_OPENOCD', path: `${NodePath.dirname(settingManager.getOpenOCDExePath())}` }
     ].forEach(o => {
         if (File.IsDir(o.path)) {
             pathList.push(o);
@@ -956,7 +956,7 @@ function exportEnvToSysPath(context?: vscode.ExtensionContext) {
     });
 
     // search tools folder and export path to system env
-    eideToolsFolder.GetList(File.EXCLUDE_ALL_FILTER).forEach((subDir) => {
+    zideToolsFolder.GetList(File.EXCLUDE_ALL_FILTER).forEach((subDir) => {
 
         if (!/^\w+$/.test(subDir.name)) return; // filter dir name
 
@@ -993,7 +993,7 @@ function exportEnvToSysPath(context?: vscode.ExtensionContext) {
 
         // export bin folder if we found
         if (binFolderPaths.length > 0) {
-            const keyName = `EIDE_TOOL_${subDir.name.toUpperCase()}`;
+            const keyName = `ZIDE_TOOL_${subDir.name.toUpperCase()}`;
             if (pathList.findIndex(o => o.key == keyName) != -1) return; // skip repeat key name
             pathList.push({
                 key: keyName,
@@ -1007,9 +1007,9 @@ function exportEnvToSysPath(context?: vscode.ExtensionContext) {
     legacyBuilderDir.GetList(File.EXCLUDE_ALL_FILTER).forEach((subDir) => {
         const binFolder = File.normalize(`${subDir.path}/bin`);
         if (File.IsDir(binFolder)) {
-            const key_name = `EIDE_${subDir.name.toUpperCase()}`;
+            const key_name = `ZIDE_${subDir.name.toUpperCase()}`;
             // check msys is enabled
-            if (key_name == 'EIDE_MSYS' && !settingManager.isEnableMsys())
+            if (key_name == 'ZIDE_MSYS' && !settingManager.isEnableMsys())
                 return;
             pathList.push({
                 key: key_name,
@@ -1044,7 +1044,7 @@ function exportEnvToSysPath(context?: vscode.ExtensionContext) {
     }
 
     /* setup python3 cmd */
-    process.env['EIDE_PY3_CMD'] = resManager.getPython3();
+    process.env['ZIDE_PY3_CMD'] = resManager.getPython3();
 
     // .NET 工具会收集用法数据，帮助我们改善你的体验。它由 Microsoft 收集并与社区共享。
     // 你可通过使用喜欢的 shell 将 DOTNET_CLI_TELEMETRY_OPTOUT 环境变量设置为 "1" 或 "true" 来选择退出遥测。
@@ -1265,48 +1265,48 @@ async function InitComponents(context: vscode.ExtensionContext): Promise<boolean
         const bar_make = statusBarManager.create('build');
         const bar_flash = statusBarManager.create('flash');
 
-        bar_proj.text    = `EIDE Project: unspecified`;
-        bar_proj.command = `_cl.eide.statusbar.switch-target`;
-        bar_proj.tooltip = `Switch target for eide project`;
+        bar_proj.text    = `ZIDE Project: unspecified`;
+        bar_proj.command = `_cl.zide.statusbar.switch-target`;
+        bar_proj.tooltip = `Switch target for zide project`;
 
         bar_make.text    = `$(tools) Build`;
-        bar_make.command = `_cl.eide.statusbar.build`;
-        bar_make.tooltip = `Build eide project`;
+        bar_make.command = `_cl.zide.statusbar.build`;
+        bar_make.tooltip = `Build zide project`;
 
         bar_flash.text    = `$(arrow-down) Flash`;
-        bar_flash.command = `_cl.eide.statusbar.flash`;
+        bar_flash.command = `_cl.zide.statusbar.flash`;
         bar_flash.tooltip = `Upload binary file to device`;
     }
 
     // register bash profile for windows
     if (os.platform() == 'win32') {
-        context.subscriptions.push(vscode.window.registerTerminalProfileProvider(EideTerminalProvider.UNIX_BASH_ID,
-            new EideTerminalProvider(EideTerminalProvider.UNIX_BASH_ID)));
+        context.subscriptions.push(vscode.window.registerTerminalProfileProvider(ZideTerminalProvider.UNIX_BASH_ID,
+            new ZideTerminalProvider(ZideTerminalProvider.UNIX_BASH_ID)));
     }
 
     context.subscriptions.push(
-        vscode.window.registerTerminalProfileProvider(EideTerminalProvider.SYSTEM_SHELL_ID,
-            new EideTerminalProvider(EideTerminalProvider.SYSTEM_SHELL_ID)));
+        vscode.window.registerTerminalProfileProvider(ZideTerminalProvider.SYSTEM_SHELL_ID,
+            new ZideTerminalProvider(ZideTerminalProvider.SYSTEM_SHELL_ID)));
 
     // update onchanged
     settingManager.on('onChanged', (e) => {
 
         /* set some toolpath to env when path is changed */
-        if (e.affectsConfiguration('EIDE.ARM.GCC.InstallDirectory') ||
-            e.affectsConfiguration('EIDE.JLink.InstallDirectory') ||
-            e.affectsConfiguration('EIDE.OpenOCD.ExePath')) {
+        if (e.affectsConfiguration('ZIDE.ARM.GCC.InstallDirectory') ||
+            e.affectsConfiguration('ZIDE.JLink.InstallDirectory') ||
+            e.affectsConfiguration('ZIDE.OpenOCD.ExePath')) {
             exportEnvToSysPath();
         }
     });
 
     // register custom editor provider
     context.subscriptions.push(
-        vscode.window.registerCustomEditorProvider('cl.eide.map.view',
+        vscode.window.registerCustomEditorProvider('cl.zide.map.view',
             new MapViewEditorProvider(), { webviewOptions: { enableFindWidget: true } }));
 
     // terminal link providers
     context.subscriptions.push(
-        vscode.window.registerTerminalLinkProvider(new EideTerminalLinkProvider()));
+        vscode.window.registerTerminalLinkProvider(new ZideTerminalLinkProvider()));
 
     return true;
 }
@@ -1328,21 +1328,21 @@ function RegisterGlobalEvent() {
         }
     });
 
-    const outChannel = vscode.window.createOutputChannel('eide-log');
+    const outChannel = vscode.window.createOutputChannel('zide-log');
     GlobalEvent.on('globalLog', (msg) => outChannel.appendLine(LogDumper.Msg2String(msg)));
     GlobalEvent.on('globalLog.append', (log) => outChannel.append(log));
     GlobalEvent.on('globalLog.show', () => outChannel.show());
 
     GlobalEvent.on('project.opened', () => {
         prj_count++; // increment cnt
-        vscode.commands.executeCommand('setContext', 'cl.eide.projectActived', true);
-        vscode.commands.executeCommand('setContext', 'cl.eide.enable.active', prj_count > 1);
+        vscode.commands.executeCommand('setContext', 'cl.zide.projectActived', true);
+        vscode.commands.executeCommand('setContext', 'cl.zide.enable.active', prj_count > 1);
     });
 
     GlobalEvent.on('project.closed', () => {
         prj_count--; // reduce cnt
-        vscode.commands.executeCommand('setContext', 'cl.eide.projectActived', prj_count != 0);
-        vscode.commands.executeCommand('setContext', 'cl.eide.enable.active', prj_count > 1);
+        vscode.commands.executeCommand('setContext', 'cl.zide.projectActived', prj_count != 0);
+        vscode.commands.executeCommand('setContext', 'cl.zide.enable.active', prj_count > 1);
     });
 
     // for status bar
@@ -1367,7 +1367,7 @@ function RegisterGlobalEvent() {
 // --- task provider
 ////////////////////////////////////////////
 
-interface EideShellTaskDef extends vscode.TaskDefinition {
+interface ZideShellTaskDef extends vscode.TaskDefinition {
 
     label: string;
 
@@ -1382,9 +1382,9 @@ interface EideShellTaskDef extends vscode.TaskDefinition {
     env?: { [key: string]: string }
 }
 
-class EideTaskProvider implements vscode.TaskProvider {
+class ZideTaskProvider implements vscode.TaskProvider {
 
-    public static TASK_TYPE_BASH = 'eide.bash';
+    public static TASK_TYPE_BASH = 'zide.bash';
 
     provideTasks(token: vscode.CancellationToken): vscode.ProviderResult<vscode.Task[]> {
         return undefined;
@@ -1394,7 +1394,7 @@ class EideTaskProvider implements vscode.TaskProvider {
 
         const workspaceManager = WorkspaceManager.getInstance();
 
-        if (task_.definition.type == EideTaskProvider.TASK_TYPE_BASH) {
+        if (task_.definition.type == ZideTaskProvider.TASK_TYPE_BASH) {
 
             let bash_executable = '/bin/bash';
 
@@ -1406,10 +1406,10 @@ class EideTaskProvider implements vscode.TaskProvider {
                 }
             }
 
-            const definition: EideShellTaskDef = <any>task_.definition;
+            const definition: ZideShellTaskDef = <any>task_.definition;
 
             const task = new vscode.Task(definition, vscode.TaskScope.Workspace,
-                definition.name || definition.label, EideTaskProvider.TASK_TYPE_BASH, definition.problemMatchers);
+                definition.name || definition.label, ZideTaskProvider.TASK_TYPE_BASH, definition.problemMatchers);
 
             let envs = definition.env;
             const prj = projectExplorer.getActiveProject();
@@ -1437,7 +1437,7 @@ class EideTaskProvider implements vscode.TaskProvider {
 // --- terminal link provider
 ////////////////////////////////////////////
 
-class EideTerminalLink extends vscode.TerminalLink {
+class ZideTerminalLink extends vscode.TerminalLink {
     file?: string;
     line?: number;
 }
@@ -1449,7 +1449,7 @@ interface TerminalLinkPattern {
     col?: number;
 }
 
-class EideTerminalLinkProvider implements vscode.TerminalLinkProvider<EideTerminalLink> {
+class ZideTerminalLinkProvider implements vscode.TerminalLinkProvider<ZideTerminalLink> {
 
     private workspace: File | undefined;
 
@@ -1505,9 +1505,9 @@ class EideTerminalLinkProvider implements vscode.TerminalLinkProvider<EideTermin
         return File.normalize(`${this.workspace.path}/${path}`);
     }
 
-    async provideTerminalLinks(context: vscode.TerminalLinkContext, token: vscode.CancellationToken): Promise<EideTerminalLink[]> {
+    async provideTerminalLinks(context: vscode.TerminalLinkContext, token: vscode.CancellationToken): Promise<ZideTerminalLink[]> {
 
-        // only for eide builder task
+        // only for zide builder task
         if (!context.terminal.name.trim().includes('build')) {
             return [];
         }
@@ -1515,7 +1515,7 @@ class EideTerminalLinkProvider implements vscode.TerminalLinkProvider<EideTermin
         for (const pattern of this.patterns) {
             const m = pattern.regexp.exec(context.line);
             if (m && m.length > 1) {
-                const link = new EideTerminalLink(m.index, m[0].length);
+                const link = new ZideTerminalLink(m.index, m[0].length);
                 link.file = this.toAbsPath(m[pattern.file]);
                 link.line = parseInt(m[pattern.line]) - 1;
                 return [link];
@@ -1525,7 +1525,7 @@ class EideTerminalLinkProvider implements vscode.TerminalLinkProvider<EideTermin
         return [];
     }
 
-    async handleTerminalLink(link: EideTerminalLink): Promise<void> {
+    async handleTerminalLink(link: ZideTerminalLink): Promise<void> {
 
         if (!link.file || !link.line || link.line == -1)
             return;
@@ -1543,10 +1543,10 @@ class EideTerminalLinkProvider implements vscode.TerminalLinkProvider<EideTermin
 // --- terminal provider
 ///////////////////////////////////////////////
 
-class EideTerminalProvider implements vscode.TerminalProfileProvider {
+class ZideTerminalProvider implements vscode.TerminalProfileProvider {
 
-    public static readonly UNIX_BASH_ID = 'eide.unix.bash';
-    public static readonly SYSTEM_SHELL_ID = 'eide.system.shell';
+    public static readonly UNIX_BASH_ID = 'zide.unix.bash';
+    public static readonly SYSTEM_SHELL_ID = 'zide.system.shell';
 
     private type: string;
 
@@ -1557,9 +1557,9 @@ class EideTerminalProvider implements vscode.TerminalProfileProvider {
     provideTerminalProfile(token: vscode.CancellationToken): vscode.ProviderResult<vscode.TerminalProfile> {
 
         switch (this.type) {
-            case EideTerminalProvider.UNIX_BASH_ID:
+            case ZideTerminalProvider.UNIX_BASH_ID:
                 return this.provideBashTerminal();
-            case EideTerminalProvider.SYSTEM_SHELL_ID:
+            case ZideTerminalProvider.SYSTEM_SHELL_ID:
                 return this.provideSystemTerminal();
             default:
                 return undefined;
@@ -1608,7 +1608,7 @@ class EideTerminalProvider implements vscode.TerminalProfileProvider {
 
         const welcome = [
             `--------------------------------------------`,
-            `          \x1b[32;22m ${shellName} (eide env) \x1b[0m`,
+            `          \x1b[32;22m ${shellName} (zide env) \x1b[0m`,
             `--------------------------------------------`,
             ``
         ];
@@ -1654,8 +1654,8 @@ import {
     JLinkOptions, JLinkProtocolType, OpenOCDFlashOptions, 
     PyOCDFlashOptions, STLinkOptions, ProbeRSFlashOptions, STVPFlasherOptions
 } from './HexUploader';
-import { AbstractProject } from './EIDEProject';
-import { EideDiagnosticCode } from './ProblemMatcher';
+import { AbstractProject } from './ZIDEProject';
+import { ZideDiagnosticCode } from './ProblemMatcher';
 
 type MapViewParserType = 'memap' | 'builtin';
 
@@ -1859,13 +1859,13 @@ class MapViewEditorProvider implements vscode.CustomTextEditorProvider {
                         }
 
                         if (os.platform() == 'win32') {
-                            // "%USERPROFILE%\.eide\bin\python36\python3" -m memap %*
+                            // "%USERPROFILE%\.zide\bin\python36\python3" -m memap %*
                             const py3 = ResManager.instance().getPython3();
                             lines = ChildProcess
                                 .execFileSync(py3, ['-m', 'memap', '-t', memapTyp, '-d', vInfo.treeDepth.toString(), vInfo.mapPath])
                                 .toString().split(/\r\n|\n/);
                         } else {
-                            // PYTHONPATH="/home/xxx/.eide/bin/builder/utils/memap" python -m memap -t GCC_ARM -d 100 "/home/xxx/build/Debug/stm32f1xx_gcc.map"
+                            // PYTHONPATH="/home/xxx/.zide/bin/builder/utils/memap" python -m memap -t GCC_ARM -d 100 "/home/xxx/build/Debug/stm32f1xx_gcc.map"
                             const memapPkgDir = File.from(ResManager.GetInstance().getLegacyBuilderDir().path, 'utils', 'memap');
                             const command = `PYTHONPATH="${memapPkgDir.path}" python -m memap -t ${memapTyp} -d ${vInfo.treeDepth} "${vInfo.mapPath}"`;
                             lines = ChildProcess
@@ -1919,8 +1919,8 @@ class MapViewEditorProvider implements vscode.CustomTextEditorProvider {
                 const absPath = File.normalize(htmlFolder.path + File.sep + fileName);
                 return `"${webview.asWebviewUri(vscode.Uri.file(absPath)).toString()}"`;
             })
-            .replace('$EIDE_MAPVIEW_TITLE', title)
-            .replace('$EIDE_MAPVIEW_TEXT_CONTENT', () => JSON.stringify(cont));
+            .replace('$ZIDE_MAPVIEW_TITLE', title)
+            .replace('$ZIDE_MAPVIEW_TEXT_CONTENT', () => JSON.stringify(cont));
         return html;
     }
 
@@ -2010,7 +2010,7 @@ class ExternalDebugConfigProvider implements vscode.DebugConfigurationProvider {
             case 'GCC':
                 if (!toolchainManager.isToolchainPathReady('GCC')) {
                     const msg = view_str$prompt$not_found_compiler.replace('{}', 'arm-none-eabi-gcc');
-                    ResInstaller.instance().setOrInstallTools('GCC', msg, 'EIDE.ARM.GCC.InstallDirectory');
+                    ResInstaller.instance().setOrInstallTools('GCC', msg, 'ZIDE.ARM.GCC.InstallDirectory');
                     return result;
                 }
                 gdbPath = NodePath.join(
@@ -2019,7 +2019,7 @@ class ExternalDebugConfigProvider implements vscode.DebugConfigurationProvider {
                 break;
             case 'RISCV_GCC':
                 if (!toolchainManager.isToolchainPathReady(toolchain.name)) {
-                    const msg = view_str$prompt$not_found_compiler.replace('{}', 'EIDE.RISCV.InstallDirectory');
+                    const msg = view_str$prompt$not_found_compiler.replace('{}', 'ZIDE.RISCV.InstallDirectory');
                     GlobalEvent.emit('msg', newMessage('Warning', msg));
                     return result;
                 }
@@ -2029,7 +2029,7 @@ class ExternalDebugConfigProvider implements vscode.DebugConfigurationProvider {
                 break;
             case 'ANY_GCC':
                 if (!toolchainManager.isToolchainPathReady(toolchain.name)) {
-                    const msg = view_str$prompt$not_found_compiler.replace('{}', 'EIDE.Toolchain.AnyGcc.InstallDirectory');
+                    const msg = view_str$prompt$not_found_compiler.replace('{}', 'ZIDE.Toolchain.AnyGcc.InstallDirectory');
                     GlobalEvent.emit('msg', newMessage('Warning', msg));
                     return result;
                 }
@@ -2063,7 +2063,7 @@ class ExternalDebugConfigProvider implements vscode.DebugConfigurationProvider {
             } else {
                 const searchDirs = [
                     prj.getRootDir(),
-                    prj.getEideDir(),
+                    prj.getZideDir(),
                     File.from(prj.getRootDir().path, 'tools')
                 ];
                 for (const d of searchDirs) {
@@ -2342,7 +2342,7 @@ class ExternalDebugConfigProvider implements vscode.DebugConfigurationProvider {
             // find ST-LINK_gdbserver
             let gdbserverPath: string | undefined;
             if (platform.osType() == 'win32') {
-                const gdbserver = File.from(resManager.getEideToolsInstallDir(), 
+                const gdbserver = File.from(resManager.getZideToolsInstallDir(), 
                     'stlink_gdb_server', 'bin', 'ST-LINK_gdbserver.exe');
                 if (!gdbserver.IsFile()) {
                     ResInstaller.instance().setOrInstallTools('stlink_gdb_server', 'Not found ST-LINK_gdbserver.exe');
@@ -2355,7 +2355,7 @@ class ExternalDebugConfigProvider implements vscode.DebugConfigurationProvider {
             // find STM32_Programmer_CLI
             let cubeProgramerPath: string | undefined;
             if (platform.osType() == 'win32') {
-                const cubeProgramerExe = File.from(resManager.getEideToolsInstallDir(), 
+                const cubeProgramerExe = File.from(resManager.getZideToolsInstallDir(), 
                     'st_cube_programer', 'bin', 'STM32_Programmer_CLI.exe');
                 if (!cubeProgramerExe.IsFile()) {
                     ResInstaller.instance().setOrInstallTools('STLink', 'Not found STM32_Programmer_CLI.exe');
@@ -2454,7 +2454,7 @@ class ExternalDebugConfigProvider implements vscode.DebugConfigurationProvider {
         //     };
         //     const searchDirs = [
         //         prj.getRootDir(),
-        //         prj.getEideDir(),
+        //         prj.getZideDir(),
         //         File.from(prj.getRootDir().path, 'tools')
         //     ];
         //     for (const d of searchDirs) {
@@ -2549,8 +2549,8 @@ class CompilerLogCodeActionProvider implements vscode.CodeActionProvider {
         const stub_missed_diags: vscode.Diagnostic[] = [];
 
         context.diagnostics.forEach((ele) => {
-            if (ele.source === 'eide') {
-                if (ele.code == EideDiagnosticCode.GCC_SYS_STUB_MISSED) {
+            if (ele.source === 'zide') {
+                if (ele.code == ZideDiagnosticCode.GCC_SYS_STUB_MISSED) {
                     stub_missed_diags.push(ele);
                 }
             }
@@ -2561,7 +2561,7 @@ class CompilerLogCodeActionProvider implements vscode.CodeActionProvider {
             act.diagnostics = stub_missed_diags;
             act.command = {
                 title: view_str$add_missed_stubs,
-                command: 'eide.project.create_sys_stubs',
+                command: 'zide.project.create_sys_stubs',
                 arguments: [prjuid]
             };
             results.push(act);

@@ -23,9 +23,9 @@
 */
 
 import { CallToolResult } from '@modelcontextprotocol/sdk/types';
-import { ProjectExplorer } from '../EIDEProjectExplorer';
-import { AbstractProject } from '../EIDEProject';
-import { BuilderOptions } from '../EIDETypeDefine';
+import { ProjectExplorer } from '../ZIDEProjectExplorer';
+import { AbstractProject } from '../ZIDEProject';
+import { BuilderOptions } from '../ZIDETypeDefine';
 import { FlashCommandResult } from '../HexUploader';
 import { loadBuilderOptionsSchema, validateBuilderOptions } from './mcp_builder_opts_validate';
 
@@ -74,23 +74,23 @@ export async function executeTool(
     const uid = args.uid as string | null | undefined;
 
     switch (tool) {
-        case 'eide_build':
-        case 'eide_rebuild':
-        case 'eide_clean': {
+        case 'zide_build':
+        case 'zide_rebuild':
+        case 'zide_clean': {
             const prj = resolveProject(explorer, uid);
             if (!prj)
                 return projectNotFound(uid);
             let res: { success: boolean; message: string; };
-            if (tool === 'eide_build') {
+            if (tool === 'zide_build') {
                 res = await explorer.buildProject(prj, { notRebuild: true, otherArgs: ['--no-color'] }, true);
-            } else if (tool === 'eide_rebuild') {
+            } else if (tool === 'zide_rebuild') {
                 res = await explorer.buildProject(prj, { otherArgs: ['--no-color'] }, true);
             } else {
                 res = await explorer.cleanProject(prj, true);
             }
             return makeTextResult(res.success, res.message);
         }
-        case 'eide_flash': {
+        case 'zide_flash': {
             const prj = resolveProject(explorer, uid);
             if (!prj)
                 return projectNotFound(uid);
@@ -108,7 +108,7 @@ export async function executeTool(
                 return makeTextResult(false, 'Unknown Error.');
             }
         }
-        case 'eide_reload': {
+        case 'zide_reload': {
             const prj = resolveProject(explorer, uid);
             if (!prj)
                 return projectNotFound(uid);
@@ -118,7 +118,7 @@ export async function executeTool(
             await new Promise(r => setTimeout(r, ok ? 2000 : 500)); // delay after reload project.
             return result;
         }
-        case 'eide_switch_target': {
+        case 'zide_switch_target': {
             const prj = resolveProject(explorer, uid);
             if (!prj)
                 return projectNotFound(uid);
@@ -130,7 +130,7 @@ export async function executeTool(
             await new Promise(r => setTimeout(r, 1500));
             return makeTextResult(true, 'Succeed.');
         }
-        case 'eide_add_src_dir': {
+        case 'zide_add_src_dir': {
             const prj = resolveProject(explorer, uid);
             if (!prj)
                 return projectNotFound(uid);
@@ -143,7 +143,7 @@ export async function executeTool(
             prj.GetConfiguration().AddSrcDir(absSrcDir);
             return makeTextResult(true, 'Succeed.');
         }
-        case 'eide_del_src_dir': {
+        case 'zide_del_src_dir': {
             const prj = resolveProject(explorer, uid);
             if (!prj)
                 return projectNotFound(uid);
@@ -155,7 +155,7 @@ export async function executeTool(
             prj.GetConfiguration().RemoveSrcDir(absSrcDir);
             return makeTextResult(true, 'Succeed.');
         }
-        case 'eide_get_src_dirs': {
+        case 'zide_get_src_dirs': {
             const prj = resolveProject(explorer, uid);
             if (!prj)
                 return projectNotFound(uid);
@@ -163,7 +163,7 @@ export async function executeTool(
                 .getRootFolderList().map(info => prj.toRelativePath(info.fileWatcher.file.path));
             return makeJsonResult(srcList);
         }
-        case 'eide_exclude_src_file': {
+        case 'zide_exclude_src_file': {
             const prj = resolveProject(explorer, uid);
             if (!prj)
                 return projectNotFound(uid);
@@ -171,7 +171,7 @@ export async function executeTool(
             prj.excludeSourceFile(prj.ToAbsolutePath(filePath));
             return makeTextResult(true, 'Succeed.');
         }
-        case 'eide_include_src_file': {
+        case 'zide_include_src_file': {
             const prj = resolveProject(explorer, uid);
             if (!prj)
                 return projectNotFound(uid);
@@ -179,7 +179,7 @@ export async function executeTool(
             prj.unexcludeSourceFile(prj.ToAbsolutePath(filePath));
             return makeTextResult(true, 'Succeed.');
         }
-        case 'eide_get_inc_dirs': {
+        case 'zide_get_inc_dirs': {
             const prj = resolveProject(explorer, uid);
             if (!prj)
                 return projectNotFound(uid);
@@ -190,7 +190,7 @@ export async function executeTool(
             });
             return makeJsonResult(incList);
         }
-        case 'eide_set_inc_dirs': {
+        case 'zide_set_inc_dirs': {
             const prj = resolveProject(explorer, uid);
             if (!prj)
                 return projectNotFound(uid);
@@ -203,14 +203,14 @@ export async function executeTool(
             prj.GetConfiguration().CustomDep_NotifyChanged();
             return makeTextResult(true, 'Succeed.');
         }
-        case 'eide_get_defines': {
+        case 'zide_get_defines': {
             const prj = resolveProject(explorer, uid);
             if (!prj)
                 return projectNotFound(uid);
             const depMerge = prj.GetConfiguration().GetAllMergeDep();
             return makeJsonResult(depMerge.defineList);
         }
-        case 'eide_set_defines': {
+        case 'zide_set_defines': {
             const prj = resolveProject(explorer, uid);
             if (!prj)
                 return projectNotFound(uid);
@@ -223,14 +223,14 @@ export async function executeTool(
             prj.GetConfiguration().CustomDep_NotifyChanged();
             return makeTextResult(true, 'Succeed.');
         }
-        case 'eide_get_builder_opts': {
+        case 'zide_get_builder_opts': {
             const prj = resolveProject(explorer, uid);
             if (!prj)
                 return projectNotFound(uid);
             const builderOpts = prj.GetConfiguration().toolchainConfigModel.getOptions();
             return makeJsonResult(builderOpts);
         }
-        case 'eide_get_builder_opts_schema': {
+        case 'zide_get_builder_opts_schema': {
             const prj = resolveProject(explorer, uid);
             if (!prj)
                 return projectNotFound(uid);
@@ -241,7 +241,7 @@ export async function executeTool(
                 return makeTextResult(false, 'Failed to load builder options schema.', error);
             }
         }
-        case 'eide_get_targets': {
+        case 'zide_get_targets': {
             const prj = resolveProject(explorer, uid);
             if (!prj)
                 return projectNotFound(uid);
@@ -250,7 +250,7 @@ export async function executeTool(
                 targets: prj.getTargets()
             });
         }
-        case 'eide_set_builder_opts': {
+        case 'zide_set_builder_opts': {
             const prj = resolveProject(explorer, uid);
             if (!prj)
                 return projectNotFound(uid);

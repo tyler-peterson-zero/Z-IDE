@@ -6,7 +6,7 @@ import * as NodePath from 'path';
 import * as child_process from 'child_process';
 import * as os from 'os';
 import * as yaml from 'yaml';
-import { ProjectBaseApi } from './EIDETypeDefine';
+import { ProjectBaseApi } from './ZIDETypeDefine';
 import { File } from '../lib/node-utility/File';
 import { GlobalEvent } from './GlobalEvents';
 import { ExceptionToMessage } from './Message';
@@ -99,7 +99,7 @@ function newVscFileRange(line: number, start: number, len: number): vscode.Range
 
 //////////////////////////////////////////////////////////////////////
 
-export enum EideDiagnosticCode {
+export enum ZideDiagnosticCode {
     GCC_SYS_STUB_MISSED = 10,
 };
 

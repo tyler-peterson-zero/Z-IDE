@@ -1,6 +1,6 @@
 import { File } from '../lib/node-utility/File';
 import { CompilerCommandsDatabaseItem } from './CodeBuilder';
-import { AbstractProject } from "./EIDEProject";
+import { AbstractProject } from "./ZIDEProject";
 import { CallgraphVcg, parseCallgraphVcgFile } from './GccCallgraphParser';
 import { parseStackUsageFile, StackUsageDocument } from './GccStackUsageParser';
 import { GlobalEvent } from './GlobalEvents';

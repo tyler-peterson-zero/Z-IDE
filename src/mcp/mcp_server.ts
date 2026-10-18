@@ -149,14 +149,14 @@ class InstanceRouter {
         if (!instanceId) {
             return Promise.resolve({
                 isError: true,
-                content: [{ type: 'text', text: 'No EIDE extension instance available for this request.' }]
+                content: [{ type: 'text', text: 'No ZIDE extension instance available for this request.' }]
             });
         }
         const inst = this.instances.get(instanceId);
         if (!inst || inst.socket.destroyed) {
             return Promise.resolve({
                 isError: true,
-                content: [{ type: 'text', text: `EIDE extension instance disconnected (id=${instanceId}).` }]
+                content: [{ type: 'text', text: `ZIDE extension instance disconnected (id=${instanceId}).` }]
             });
         }
 
@@ -333,7 +333,7 @@ async function main(): Promise<void> {
                         jsonrpc: '2.0',
                         error: {
                             code: -32000,
-                            message: 'No EIDE extension instance connected. Open a VS Code window with EIDE enabled.'
+                            message: 'No ZIDE extension instance connected. Open a VS Code window with ZIDE enabled.'
                         },
                         id: null
                     });

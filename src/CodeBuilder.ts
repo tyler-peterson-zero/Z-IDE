@@ -31,16 +31,16 @@ import * as os from 'os';
 import * as child_process from 'child_process';
 import * as mathjs from 'mathjs';
 
-import { AbstractProject, VirtualSource } from "./EIDEProject";
+import { AbstractProject, VirtualSource } from "./ZIDEProject";
 import { ResManager } from "./ResManager";
 import { File } from "../lib/node-utility/File";
-import { BuilderOptions, ProjectConfigData, ProjectConfiguration } from "./EIDETypeDefine";
+import { BuilderOptions, ProjectConfigData, ProjectConfiguration } from "./ZIDETypeDefine";
 import {
     ArmBaseCompileData,
     Memory, ARMStorageLayout,
     FloatingHardwareOption, C51BaseCompileData, RiscvCompileData, AnyGccCompileData, MipsCompileData,
     getRamRomName
-} from './EIDEProjectModules';
+} from './ZIDEProjectModules';
 import { SettingManager } from "./SettingManager";
 import { GlobalEvent } from "./GlobalEvents";
 import { ExceptionToMessage, newMessage } from "./Message";
@@ -323,7 +323,7 @@ export abstract class CodeBuilder {
             }
             // setup task
             const task = new vscode.Task({ type: 'shell', command: commandLine }, vscode.TaskScope.Workspace,
-                title, 'eide.builder', new vscode.ShellExecution(commandLine, shellOption), []);
+                title, 'zide.builder', new vscode.ShellExecution(commandLine, shellOption), []);
             task.group = vscode.TaskGroup.Build;
             task.isBackground = false;
             task.presentationOptions = { echo: true, focus: false, clear: true };

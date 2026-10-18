@@ -36,7 +36,7 @@ import * as os from 'os';
 import * as fs from 'fs';
 import * as crypto from 'crypto';
 import { CPUInfo } from "./HexUploader";
-import { AbstractProject } from "./EIDEProject";
+import { AbstractProject } from "./ZIDEProject";
 import { SettingManager } from "./SettingManager";
 import * as utility from './utility'
 import { CmdLineHandler } from "./CmdLineHandler";
@@ -47,7 +47,7 @@ import { jsonc } from "jsonc";
 let resManager: ResManager | undefined;
 
 // plug-in built-in folders
-const eideBuiltinDirs: { [key: string]: string } = {
+const zideBuiltinDirs: { [key: string]: string } = {
     'lib': 'lib',
     'lang': 'lang',
     'html': 'res' + File.sep + 'html',
@@ -58,8 +58,8 @@ const eideBuiltinDirs: { [key: string]: string } = {
     '7z': 'res' + File.sep + 'tools' + File.sep + osType() + File.sep + '7z',
 };
 
-// eide-binaries built-in folders
-const eideBinariesDirs: { [key: string]: string } = {
+// zide-binaries built-in folders
+const zideBinariesDirs: { [key: string]: string } = {
     'bin': 'bin',
     'include': 'bin' + File.sep + 'include',
     'builder': 'bin' + File.sep + 'builder',
@@ -68,7 +68,7 @@ const eideBinariesDirs: { [key: string]: string } = {
 };
 
 const codePage = GetLocalCodePage();
-const cacheName = 'eide.cache';
+const cacheName = 'zide.cache';
 
 export interface FileCacheInfo {
     name: string;
@@ -228,7 +228,7 @@ export class ResManager extends events.EventEmitter {
 
     getAppUsrData(): { [key: string]: any } | undefined {
 
-        const dataFile = File.fromArray([this.getEideHomeFolder().path, 'usr-data.yaml']);
+        const dataFile = File.fromArray([this.getZideHomeFolder().path, 'usr-data.yaml']);
 
         if (dataFile.IsFile()) {
             try {
@@ -245,9 +245,9 @@ export class ResManager extends events.EventEmitter {
 
         data[key] = val;
 
-        this.getEideHomeFolder().CreateDir(false);
+        this.getZideHomeFolder().CreateDir(false);
 
-        File.fromArray([this.getEideHomeFolder().path, 'usr-data.yaml']).Write(yaml.stringify(data));
+        File.fromArray([this.getZideHomeFolder().path, 'usr-data.yaml']).Write(yaml.stringify(data));
     }
 
     //=====================
@@ -260,7 +260,7 @@ export class ResManager extends events.EventEmitter {
     }
 
     /**
-     * 按照文件名字，在 /tmp/EIDE 目录下寻找缓存的临时文件
+     * 按照文件名字，在 /tmp/ZIDE 目录下寻找缓存的临时文件
     */
     getCachedFileByName(name: string): File {
         return new File(this.GetTmpDir().path + File.sep + name);
@@ -292,7 +292,7 @@ export class ResManager extends events.EventEmitter {
     }
 
     GetTmpDir(): File {
-        const f = new File(os.tmpdir() + File.sep + 'EIDE');
+        const f = new File(os.tmpdir() + File.sep + 'ZIDE');
         f.CreateDir(true);
         return f;
     }
@@ -327,7 +327,7 @@ export class ResManager extends events.EventEmitter {
 
     getPython3(): string {
         if (osType() == 'win32') {
-            return File.from(userhome(), '.eide', 'bin', 'python36', 'python3.exe').path;
+            return File.from(userhome(), '.zide', 'bin', 'python36', 'python3.exe').path;
         } else {
             return find('python3') || 'python';
         }
@@ -343,20 +343,20 @@ export class ResManager extends events.EventEmitter {
         }
     }
 
-    getEideHomeFolder(): File {
-        return File.fromArray([userhome(), '.eide']);
+    getZideHomeFolder(): File {
+        return File.fromArray([userhome(), '.zide']);
     }
 
     getBuiltInToolsDir(): File {
         return <File>this.GetDir('tools');
     }
 
-    getEideToolsInstallDir(): string {
-        return [userhome(), '.eide', 'tools'].join(File.sep);
+    getZideToolsInstallDir(): string {
+        return [userhome(), '.zide', 'tools'].join(File.sep);
     }
 
     GetLogDir(): File {
-        return this.getEideHomeFolder();
+        return this.getZideHomeFolder();
     }
 
     Get7zDir(): File {
@@ -701,16 +701,16 @@ export class ResManager extends events.EventEmitter {
 
     private LoadResourceFolders() {
 
-        for (const key in eideBuiltinDirs) {
+        for (const key in zideBuiltinDirs) {
             if (!this.context) throw new Error('Extension Context is undefined');
-            const dir = File.fromArray([this.context.extensionPath, eideBuiltinDirs[key]]);
+            const dir = File.fromArray([this.context.extensionPath, zideBuiltinDirs[key]]);
             this.dirMap.set(key, dir);
         }
 
-        const eideHome = File.fromArray([userhome(), '.eide']);
-        eideHome.CreateDir(); // create if not existed
-        for (const key in eideBinariesDirs) {
-            const dir = File.fromArray([eideHome.path, eideBinariesDirs[key]]);
+        const zideHome = File.fromArray([userhome(), '.zide']);
+        zideHome.CreateDir(); // create if not existed
+        for (const key in zideBinariesDirs) {
+            const dir = File.fromArray([zideHome.path, zideBinariesDirs[key]]);
             this.dirMap.set(key, dir);
         }
     }

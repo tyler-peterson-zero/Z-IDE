@@ -36,13 +36,13 @@ export interface GitFileInfo {
 
 /*
 
-url: "https://api.github.com/repos/github0null/eide-resource/git/blobs/8b137891791fe96927ad78e64b0aad7bded08bdc"
+url: "https://api.github.com/repos/github0null/zide-resource/git/blobs/8b137891791fe96927ad78e64b0aad7bded08bdc"
 
 {
     "sha": "2469cf4398562399df11fa6bf93af27c3cd6b92d",
     "node_id": "MDQ6QmxvYjIzNjkxMDIwMToyNDY5Y2Y0Mzk4NTYyMzk5ZGYxMWZhNmJmOTNhZjI3YzNjZDZiOTJk",
     "size": 461949,
-    "url": "https://api.github.com/repos/github0null/eide-doc/git/blobs/2469cf4398562399df11fa6bf93af27c3cd6b92d",
+    "url": "https://api.github.com/repos/github0null/zide-doc/git/blobs/2469cf4398562399df11fa6bf93af27c3cd6b92d",
     "content": ".........."
 }
 */

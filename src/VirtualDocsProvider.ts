@@ -31,7 +31,7 @@ export type VirtualDocumentContentGetter = (uri: vscode.Uri, ...args: any[]) => 
 
 export class VirtualDocument implements vscode.TextDocumentContentProvider {
 
-    public static scheme = 'eide';
+    public static scheme = 'zide';
 
     private onDidChangeEmitter: vscode.EventEmitter<vscode.Uri>;
 

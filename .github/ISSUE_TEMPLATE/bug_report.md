@@ -28,8 +28,8 @@ If applicable, add screenshots to help explain your problem.
 
 **Desktop (please complete the following information):**
  - OS: [e.g. Windows 10 xxx]
- - EIDE Version [e.g. v3.8.3]
+ - ZIDE Version [e.g. v3.8.3]
  - VSCode Version [e.g. v1.68.1]
 
 **Additional context**
-some logs, like: `<user_home>/.eide/cl.eide.log`
+some logs, like: `<user_home>/.zide/cl.zide.log`

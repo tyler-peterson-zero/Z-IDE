@@ -3,8 +3,8 @@ import * as NodePath from 'path';
 import * as os from 'os';
 import * as xml2js from 'xml2js';
 import * as ini from 'ini';
-import { VirtualFolder } from './EIDETypeDefine';
-import { VirtualSource, AbstractProject } from './EIDEProject';
+import { VirtualFolder } from './ZIDETypeDefine';
+import { VirtualSource, AbstractProject } from './ZIDEProject';
 import { ArrayDelRepetition } from '../lib/node-utility/Utility';
 import { File } from '../lib/node-utility/File';
 import { GlobalEvent } from './GlobalEvents';
@@ -317,7 +317,7 @@ function toArray(obj: any): any[] {
     return [obj];
 }
 
-export const IAR2EIDE_OPTS_MAP: any = {
+export const IAR2ZIDE_OPTS_MAP: any = {
 
     'global': {
         'General.GEndianMode': {

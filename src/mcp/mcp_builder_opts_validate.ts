@@ -24,7 +24,7 @@
 
 import Ajv, { ErrorObject } from 'ajv';
 import { File } from '../../lib/node-utility/File';
-import { AbstractProject } from '../EIDEProject';
+import { AbstractProject } from '../ZIDEProject';
 import { ResManager } from '../ResManager';
 
 let ajvInstance: Ajv | undefined;
