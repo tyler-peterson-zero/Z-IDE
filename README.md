@@ -6,9 +6,9 @@
 [![](https://img.shields.io/visual-studio-marketplace/i/CL.eide)](https://marketplace.visualstudio.com/items?itemName=CL.eide)
 [![](https://img.shields.io/visual-studio-marketplace/stars/CL.eide)](https://marketplace.visualstudio.com/items?itemName=CL.eide&ssr=false#review-details)
 
-***
+---
 
-## [中文](./README_ZH-CN.md)
+## (./README.md)
 
 ## Summary 📑
 
@@ -32,8 +32,9 @@ Supported Platforms:
 * Support for installing standard KEIL chip support packs (only for Cortex-M projects).
 * Provides many project templates for quick start a project.
 * Build, rebuild, support many toolchains (armcc, gcc-arm-none-eabi, llvm-for-arm, riscv-gcc, xxx-gcc, keil_c51, sdcc ...).
+* CMAKE configuration of build
 * Program flash, support: jlink, stlink, openocd, pyocd ...
-* ~~Built-in serial port monitor~~ (recommended to use `Serial Monitor` plug-in).
+* Built-in Vob_automation_lib support
 * Supports static checking projects by using Cppcheck.
 * Automatically generates default debug configurations for debugger plug-in `cortex-debug, STM8-Debug`.
 * Built-in many utility tools, 'CMSIS Config Wizard UI', 'Disassembly view', 'Program resource view'...
